@@ -12,3 +12,70 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User{
+  id String @id @default(cuid())
+  email String @unique
+  password String
+  avatarUrl String
+  fullName String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  purchasedCourses UserCourses[]
+}
+model Admin{
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  avatarUrl     String
+  fullName      String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  courses       Course[]
+}
+model Course{
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  price          Int
+  thumbnailUrl   String
+  creatorId      String
+  creator        Admin     @relation(fields: [creatorId],references: [id])
+  purchasedUsers UserCourses[]
+  sections       Section[]
+
+}
+
+model Section{
+  id           String       @id @default(cuid())
+  title        String
+  courseId     String
+  course       Course       @relation(fields: [courseId],references: [id])
+  contents     Content[] 
+  order        Int          @default(0)
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+}
+
+model Content{
+  id           String       @id @default(cuid())
+  title        String 
+  url          String
+  description  String?
+  sectionId    String
+  section      Section      @relation(fields: [sectionId],references: [id])
+  order        Int          @default(0)
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+}
+
+model UserCourses{
+  userId       String
+  courseId     String
+  paymentId    String        @unique
+  user         User          @relation(fields: [userId], references: [id])
+  course       Course        @relation(fields: [courseId],references: [id])
+  enrolledAt   DateTime      @default(now())
+
+  @@id([userId,courseId])
+}
