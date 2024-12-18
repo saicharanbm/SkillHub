@@ -43,6 +43,7 @@ model Course{
   creator        Admin     @relation(fields: [creatorId],references: [id])
   purchasedUsers UserCourses[]
   sections       Section[]
+  @@unique([title,creatorId])
 
 }
 

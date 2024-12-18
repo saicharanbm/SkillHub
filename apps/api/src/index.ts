@@ -2,6 +2,9 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import { router } from "./routes";
+import { signupSchema } from "@repo/zod-schemas/types";
+
+console.log(signupSchema);
 
 const app = express();
 
