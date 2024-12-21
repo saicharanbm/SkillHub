@@ -16,7 +16,9 @@ adminRouter.post("/signup", async (req, res) => {
   }
 
   const hashedPassword = await hash(response.data.password);
-  const avatarUrl = response.data.avatarUrl ? response.data.avatarUrl : "";
+  const avatarUrl = response.data.avatarUrl
+    ? response.data.avatarUrl
+    : "https://m.media-amazon.com/images/G/02/CerberusPrimeVideo-FN38FSBD/adult-2.png";
   try {
     const user = await client.admin.create({
       data: {
