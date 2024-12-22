@@ -6,6 +6,7 @@ import client from "@repo/db/client";
 import { generateToken } from "../utils";
 import { TokenType } from "../types";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { verifyAdminMiddleware } from "../middlewares/verifyAdminMiddleware";
 export const adminRouter = Router();
 
 adminRouter.post("/signup", async (req, res) => {
@@ -146,6 +147,23 @@ adminRouter.post("/get-token", async (req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   }
+});
+adminCourseRouter.get("/user", verifyAdminMiddleware, async (req, res) => {
+  const user = await client.admin.findUnique({
+    where: {
+      id: req.userId,
+    },
+    select: {
+      email: true,
+      fullName: true,
+      avatarUrl: true,
+    },
+  });
+  if (!user) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  res.json(user);
 });
 
 adminRouter.post("/signout", async (req, res) => {
