@@ -1,12 +1,20 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 // import { IoMdSearch } from "react-icons/io";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <nav className="h-16 bg-[rgba(25,30,37,.8)] fixed top-0 w-full text-white flex items-center justify-between px-[7%] backdrop-blur-16 z-40">
       <div className="flex space-x-12">
         <div className="icon">
-          <h1 className="text-3xl font-bold text-[#3F7AE9]">LearnLab</h1>
+          <h1
+            className="text-3xl font-bold text-[#3F7AE9] cursor-pointer"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            LearnLab
+          </h1>
         </div>
         {/* <div className="nav-links flex items-center space-x-4">
           {["/", "/create"].map((path, index) => (

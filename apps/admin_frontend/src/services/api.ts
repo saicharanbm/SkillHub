@@ -1,5 +1,9 @@
 import axios from "axios";
-import { loginSchemaType, signupSchemaType } from "../types";
+import {
+  loginSchemaType,
+  signupSchemaType,
+  getCourseAvatarUrlSchemaType,
+} from "../types";
 import { queryClient } from "../main";
 
 const baseURL = "http://localhost:3000/api/v1";
@@ -70,4 +74,8 @@ export const userLogin = (data: loginSchemaType) => {
 };
 export const fetchUserData = () => {
   return axiosInstance.get("/admin/user");
+};
+
+export const getSignedAvatarUrl = (data: getCourseAvatarUrlSchemaType) => {
+  return axiosInstance.post("/admin/course/signed-avatar-url", data);
 };

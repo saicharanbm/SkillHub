@@ -9,5 +9,6 @@ export const useAuthQuery = () => {
       return response.data;
     },
     retry: false,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 };

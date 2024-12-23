@@ -11,6 +11,14 @@ export const loginSchema = zod.object({
   email: zod.string().trim().email(),
   password: zod.string().trim().min(6),
 });
+export const getCourseAvatarUrlSchema = zod.object({
+  avatarName: zod.string(),
+  avatarType: zod.string().includes("image"),
+  avatarSize: zod
+    .number()
+    .gte(0)
+    .lte(5 * 1024 * 1024),
+});
 
 export const courseSchema = zod.object({
   title: zod.string().trim().min(3),
