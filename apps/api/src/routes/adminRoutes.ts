@@ -41,7 +41,9 @@ adminRouter.post("/signup", async (req, res) => {
 });
 
 adminRouter.post("/signin", async (req, res) => {
+  console.log(req.body);
   const response = loginSchema.safeParse(req.body);
+
   if (!response.success) {
     res.status(400).send("Please provide valid data");
     return;

@@ -56,12 +56,12 @@ axiosInstance.interceptors.response.use(
 );
 
 export const userSignup = (data: signupSchemaType) => {
-  return axiosInstance.post("/auth/admin/signup", data);
+  return axiosInstance.post("/admin/signup", data);
 };
 
 export const userLogin = (data: loginSchemaType) => {
-  return axiosInstance.post("/auth/admin/signup", data);
+  return axiosInstance.post("/admin/signin", data);
 };
 export const fetchUserData = () => {
-  return axiosInstance.get("/auth/admin/user");
+  return axiosInstance.get("/admin/user");
 };

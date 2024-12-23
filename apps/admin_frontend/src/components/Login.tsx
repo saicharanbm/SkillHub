@@ -2,33 +2,51 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEyeSlash } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
+import { useLoginMutation } from "../services/mutations";
+import { loginSchemaType } from "../types";
+import { useNavigate } from "react-router-dom";
 // import { usePostLogin } from "../services/mutations";
 import { useForm, SubmitHandler } from "react-hook-form";
-type loginData = {
-  email: string;
-  password: string;
-};
+import { toast } from "react-toastify";
+
 function Login() {
-  //   const { mutate: login, error, isPending } = usePostLogin();
+  const { mutate: login, isPending } = useLoginMutation();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<loginData>({ mode: "onChange" });
+  } = useForm<loginSchemaType>({ mode: "onChange" });
+  const navigate = useNavigate();
 
-  const handlLogin: SubmitHandler<loginData> = (data) => {
-    console.log(data);
-    // login(data, {
-    //   onSuccess: (data) => {
-    //     console.log("Login successful");
-    //     console.log(data);
-    //   },
-    //   onError: (error) => {
-    //     console.log("Login failed");
-    //     console.log(error);
-    //   },
-    // });
+  const handlLogin: SubmitHandler<loginSchemaType> = (data) => {
+    toast.promise(
+      new Promise<void>((resolve, reject) => {
+        login(data, {
+          onSuccess: (data) => {
+            console.log("Login successful");
+            console.log(data);
+            navigate("/");
+            resolve();
+          },
+          onError: (error) => {
+            console.log("Login failed");
+            console.log(error);
+            reject(error);
+          },
+        });
+      }),
+      {
+        pending: "Logging in...",
+        success: "Login successful!",
+        error: {
+          render({ data }: { data: string }) {
+            console.log(data);
+            return (data as string) || "Login failed!";
+          },
+        },
+      }
+    );
   };
   return (
     <div className="w-full min-h-[calc(100vh-4rem)]  text-white flex justify-center items-center">
@@ -78,7 +96,7 @@ function Login() {
                   required: "Password is required",
                   minLength: {
                     value: 6,
-                    message: "Password must be at least 8 characters",
+                    message: "Password must be at least 6 characters",
                   },
                 })}
                 placeholder="Create a password"
@@ -105,10 +123,10 @@ function Login() {
           <div>
             <button
               type="submit"
+              disabled={isPending}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg transition duration-300"
             >
-              {/* {isPending ? "Logging in..." : "Login"} */}
-              Login
+              {isPending ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>

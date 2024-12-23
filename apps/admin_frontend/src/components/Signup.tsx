@@ -2,32 +2,54 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEyeSlash } from "react-icons/fa";
 import { IoEyeSharp } from "react-icons/io5";
+import { signupSchemaType } from "../types";
+import { useSignupMutation } from "../services/mutations";
+import { toast } from "react-toastify";
 // import { usePostSignup } from "../services/mutations";
 // import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-type signupData = {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
 function Signup() {
   const [passwordVisible, setPasswordVisible] = useState(false); // For password visibility
-  //   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false); // For confirm password visibility
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<signupData>({ mode: "onChange" });
+  } = useForm<signupSchemaType>({ mode: "onChange" });
 
-  //   const { mutate: signup, error, isPending } = usePostSignup();
+  const { mutate: signup, isPending } = useSignupMutation();
   //   const navigate = useNavigate();
 
-  const handleSignup: SubmitHandler<signupData> = (data) => {
+  const handleSignup: SubmitHandler<signupSchemaType> = (data) => {
     console.log(data);
+    toast.promise(
+      new Promise<void>((resolve, reject) => {
+        signup(data, {
+          onSuccess: (data) => {
+            console.log("Signup successful");
+            console.log(data);
+            // navigate("/login");
+            resolve();
+          },
+          onError: (error) => {
+            console.log("Signup failed");
+            console.log(error);
+            reject(error);
+          },
+        });
+      }),
+      {
+        pending: "Signing up...",
+        success: "Signup successful!",
+        error: {
+          render({ data }: { data: string }) {
+            console.log(data);
+            return (data as string) || "Signup failed!";
+          },
+        },
+      }
+    );
     // signup(data, {
     //   onSuccess: (data) => {
     //     console.log("Signup successful");
@@ -141,7 +163,7 @@ function Signup() {
               //   disabled={isPending}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg transition duration-300"
             >
-              {/* {isPending ? "Signing up..." : "Sign Up"} */}
+              {isPending ? "Signing up..." : "Sign Up"}
               Signup
             </button>
           </div>
