@@ -18,6 +18,7 @@ axiosInstance.interceptors.response.use(
     //get the origoinal request
     const originalRequest = error.config;
     // Check for 401 status and specific error message
+    console.log("Error:", error.response?.data?.message);
     if (
       error.response?.status === 401 &&
       (error.response?.data?.message === "Unauthorized: Token expired" ||
@@ -25,9 +26,12 @@ axiosInstance.interceptors.response.use(
       !originalRequest._retry // Ensure no infinite loops
     ) {
       originalRequest._retry = true;
+      console.log("Refreshing token...");
       try {
         // Attempt to refresh the token
-        const refreshResponse = await axiosInstance.post("/auth/get-token");
+        const refreshResponse = await axiosInstance.post(
+          "/auth/admin/get-token"
+        );
 
         const newAccessToken = refreshResponse.data.message.token;
 

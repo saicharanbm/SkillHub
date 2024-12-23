@@ -41,7 +41,6 @@ adminRouter.post("/signup", async (req, res) => {
 });
 
 adminRouter.post("/signin", async (req, res) => {
-  console.log(req.body);
   const response = loginSchema.safeParse(req.body);
 
   if (!response.success) {
@@ -150,7 +149,7 @@ adminRouter.post("/get-token", async (req, res) => {
     }
   }
 });
-adminCourseRouter.get("/user", verifyAdminMiddleware, async (req, res) => {
+adminRouter.get("/user", verifyAdminMiddleware, async (req, res) => {
   const user = await client.admin.findUnique({
     where: {
       id: req.userId,

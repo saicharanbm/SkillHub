@@ -8,6 +8,7 @@ import "./index.css";
 import App from "./App.tsx";
 import Login from "./components/Login.tsx";
 import Signup from "./components/Signup.tsx";
+import AuthRoute from "./components/AuthRoute.tsx";
 
 export const queryClient = new QueryClient();
 
@@ -17,12 +18,24 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        path: "/",
+        element: <div>Home</div>,
+      },
+      {
         path: "/login",
-        element: <Login />,
+        element: (
+          <AuthRoute isProtected={false}>
+            <Login />
+          </AuthRoute>
+        ),
       },
       {
         path: "/signup",
-        element: <Signup />,
+        element: (
+          <AuthRoute isProtected={false}>
+            <Signup />
+          </AuthRoute>
+        ),
       },
     ],
   },

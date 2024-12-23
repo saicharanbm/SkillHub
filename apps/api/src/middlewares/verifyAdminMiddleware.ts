@@ -9,7 +9,7 @@ export const verifyAdminMiddleware = async (
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized: No token provided");
     return;
   }
   if (!process.env.JWT_ADMIN_SECRET) {
