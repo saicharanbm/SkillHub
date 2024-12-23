@@ -1,8 +1,8 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Sidebar from "./components/SideBar";
-import { useAuthQuery } from "./services/queries";
-import { useEffect } from "react";
+// import Sidebar from "./components/SideBar";
+// import { useAuthQuery } from "./services/queries";
+// import { useEffect } from "react";
 
 function App() {
   // const { isLoading, error } = useAuthQuery();

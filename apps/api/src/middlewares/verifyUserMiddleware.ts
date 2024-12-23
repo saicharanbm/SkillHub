@@ -9,11 +9,11 @@ export const verifyUser = async (
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    res.status(401).send("Unauthorized");
+    res.status(401).json({ message: "Unauthorized: No token provided" });
     return;
   }
   if (!process.env.JWT_USER_SECRET) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ message: "Internal Server Error" });
     return;
   }
   try {

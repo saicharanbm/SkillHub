@@ -13,48 +13,50 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => response, // Return response for successful requests
   async (error) => {
-    //get the origoinal request
     const originalRequest = error.config;
+    console.log(error.response?.data);
+
     // Check for 401 status and specific error message
-    console.log("Error:", error.response?.data?.message);
     if (
       error.response?.status === 401 &&
       (error.response?.data?.message === "Unauthorized: Token expired" ||
         error.response?.data?.message === "Unauthorized: No token provided") &&
       !originalRequest._retry // Ensure no infinite loops
     ) {
+      console.log("Token expired. Attempting refresh...");
+      //if the original fails again we and directly return the error.
       originalRequest._retry = true;
-      console.log("Refreshing token...");
+
       try {
-        // Attempt to refresh the token
-        const refreshResponse = await axiosInstance.post(
-          "/auth/admin/get-token"
-        );
+        const refreshAxios = axios.create({
+          baseURL: axiosInstance.defaults.baseURL,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
 
-        const newAccessToken = refreshResponse.data.message.token;
+        const refreshResponse = await refreshAxios.post("/admin/get-token");
+        console.log(refreshResponse.data);
+        const newAccessToken = refreshResponse.data.token;
 
-        // Set new access token in headers for the future requests
+        // Update global axios instance and the original request with the new token
         axiosInstance.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
-
-        // Set new access token in headers to the original request
-        //even though we have set the toakes in the global axios instance it is important to add it to the original request
-        //because Global Defaults Do Not Affect Already Prepared Requests
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        // Retry the original request with the new token
-        return axiosInstance(originalRequest);
+        return axiosInstance(originalRequest); // Retry original request
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
 
-        // Clear cached user data if refresh fails
+        // Clear cached user data and redirect to login
         queryClient.setQueryData(["auth", "user"], null);
-
-        throw refreshError; // Re-throw the error to notify the caller
+        throw refreshError; // Re-throw to propagate the error
       }
     }
-    // Reject any other errors
+
+    // Reject other errors
     return Promise.reject(error);
   }
 );

@@ -100,6 +100,7 @@ adminRouter.post("/signin", async (req, res) => {
 });
 
 adminRouter.post("/get-token", async (req, res) => {
+  console.log(req.cookies.refreshToken);
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     res
@@ -150,6 +151,8 @@ adminRouter.post("/get-token", async (req, res) => {
   }
 });
 adminRouter.get("/user", verifyAdminMiddleware, async (req, res) => {
+  console.log(req.userId);
+  console.log("hello");
   const user = await client.admin.findUnique({
     where: {
       id: req.userId,

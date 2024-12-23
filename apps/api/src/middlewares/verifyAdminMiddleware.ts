@@ -7,13 +7,15 @@ export const verifyAdminMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("verifyAdminMiddleware");
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
-    res.status(401).send("Unauthorized: No token provided");
+    res.status(401).json({ message: "Unauthorized: No token provided" });
+
     return;
   }
   if (!process.env.JWT_ADMIN_SECRET) {
-    res.status(500).send("Internal Server Error");
+    res.status(500).json({ message: "Internal Server Error" });
     return;
   }
   try {
@@ -25,6 +27,12 @@ export const verifyAdminMiddleware = async (
         id: decodedToken.userId,
       },
     });
+    if (!user || !user.id) {
+      res.status(401).json({ message: "Unauthorized: User not found" });
+      return;
+    }
+    req.userId = user.id;
+    next();
   } catch (error) {
     if (
       error instanceof jwt.JsonWebTokenError &&
