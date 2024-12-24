@@ -4,8 +4,10 @@ import {
   AiOutlineHome,
   AiOutlineClockCircle,
 } from "react-icons/ai";
-import { BsBookmark, BsChatSquare } from "react-icons/bs";
+import { IoMdCreate } from "react-icons/io";
+import { BsChatSquare } from "react-icons/bs";
 import { TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,12 +18,12 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-[#141920] text-white fixed top-0 left-0 z-50 ${
+      className={`h-screen bg-[#141920] text-white fixed top-0 px-2 left-0 z-50 ${
         isOpen ? "w-64" : "w-16"
-      } transition-all duration-300`}
+      } transition-all duration-300 over`}
     >
       {/* Toggle Button */}
-      <div className="flex items-center space-x-4 px-4 py-4">
+      <div className="flex items-center space-x-4 py-3 px-1">
         <button
           onClick={toggleSidebar}
           className="text-white hover:bg-gray-700 p-2 rounded-md"
@@ -39,21 +41,33 @@ const Sidebar = () => {
       <ul className="mt-6 space-y-4">
         {/* Home */}
         <li>
-          <div className="flex items-center space-x-4 px-4 py-3 hover:bg-gray-700 rounded-md cursor-pointer">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `flex items-center space-x-4 px-3 py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
+              ${isActive ? "bg-gray-700 text-[#3B81F6]" : "text-white"}`
+            }
+          >
             <AiOutlineHome size={24} />
             {isOpen && <span>Home</span>}
-          </div>
+          </NavLink>
         </li>
 
-        {/* Bookmarks */}
+        {/* Create Course */}
         <li>
-          <div className="flex items-center space-x-4 px-4 py-3 hover:bg-gray-700 rounded-md cursor-pointer">
-            <BsBookmark size={24} />
-            {isOpen && <span>Bookmarks</span>}
-          </div>
+          <NavLink
+            to="/create-course"
+            className={({ isActive }) =>
+              `flex items-center space-x-4 px-3 py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
+              ${isActive ? "bg-gray-700 text-[#3B81F6]" : "text-white"}`
+            }
+          >
+            <IoMdCreate size={24} />
+            {isOpen && <span>Create Course</span>}
+          </NavLink>
         </li>
 
-        {/* Questions */}
+        {/* Questions (Static) */}
         <li>
           <div className="flex items-center space-x-4 px-4 py-3 hover:bg-gray-700 rounded-md cursor-pointer">
             <BsChatSquare size={24} />
@@ -61,7 +75,7 @@ const Sidebar = () => {
           </div>
         </li>
 
-        {/* Watch History */}
+        {/* Watch History (Static) */}
         <li>
           <div className="flex items-center space-x-4 px-4 py-3 hover:bg-gray-700 rounded-md cursor-pointer">
             <AiOutlineClockCircle size={24} />
