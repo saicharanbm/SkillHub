@@ -1,5 +1,5 @@
-import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useCreateCourseMutation } from "../../services/mutations";
 interface courseFormData {
   name: string;
   description: string;
@@ -11,15 +11,34 @@ function CreateCourse() {
     handleSubmit,
     formState: { errors },
   } = useForm<courseFormData>({ mode: "onChange" });
+  const { mutate: createCourse, isPending } = useCreateCourseMutation();
   const handleUpload: SubmitHandler<courseFormData> = (data) => {
     // Log file data
     console.log("Uploaded data:", data);
     if (data.avatar.length > 0) {
       console.log("Uploaded avatar:", data.avatar[0]);
+
+      createCourse(
+        {
+          name: data.name,
+          description: data.description,
+          avatar: data.avatar[0],
+        },
+        {
+          onSuccess: (data) => {
+            console.log("Create course successful");
+            console.log(data);
+          },
+          onError: (error) => {
+            console.log("Create course failed");
+            console.log(error);
+          },
+        }
+      );
     }
   };
   return (
-    <div className="w-full min-h-[calc(100vh-4rem)] text-white flex justify-center items-center py-4 px-4 sm:px-24">
+    <div className="w-full min-h-[calc(100vh-4rem)] text-white flex justify-center items-center py-4 px-4 lg:px-24">
       <form
         onSubmit={handleSubmit(handleUpload)}
         className="w-full max-w-[90rem] bg-[#1C1C1E] rounded-lg p-8 shadow-zinc-900 flex flex-col gap-4"
@@ -108,10 +127,11 @@ function CreateCourse() {
 
         <div className="submit-container mt-4 flex justify-center">
           <button
+            disabled={isPending}
             type="submit"
             className="bg-blue-600 text-white text-lg font-semibold rounded-lg py-3 px-6 hover:bg-blue-700 focus:outline-none"
           >
-            Create Course
+            {isPending ? "Creating..." : "Create Course"}
           </button>
         </div>
       </form>

@@ -34,6 +34,7 @@ export const verifyAdminMiddleware = async (
     req.userId = user.id;
     next();
   } catch (error) {
+    console.log(error);
     if (
       error instanceof jwt.JsonWebTokenError &&
       error.name === "TokenExpiredError"
@@ -41,7 +42,7 @@ export const verifyAdminMiddleware = async (
       res.status(401).json({ message: "Unauthorized: Token expired" });
       return;
     }
-    res.status(401).json({ message: "Unauthorized: Invalid token" });
+    res.status(500).json({ message: "Internal Server Error" });
     return;
   }
 };

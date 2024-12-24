@@ -6,7 +6,7 @@ export const generateToken = (
   type: TokenType,
   secret: string
 ) => {
-  const expiresIn = type === "access" ? "15m" : "7d";
+  const expiresIn = type === "access" ? "10m" : "7d";
 
   return jwt.sign({ userId, type }, secret, {
     expiresIn,

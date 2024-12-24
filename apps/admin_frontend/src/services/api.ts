@@ -79,3 +79,37 @@ export const fetchUserData = () => {
 export const getSignedAvatarUrl = (data: getCourseAvatarUrlSchemaType) => {
   return axiosInstance.post("/admin/course/signed-avatar-url", data);
 };
+
+export async function uploadToS3(response: any, file: File): Promise<void> {
+  const { url, fields } = response;
+
+  // Create a FormData object
+  const formData = new FormData();
+
+  // Append all fields from the response
+  Object.entries(fields).forEach(([key, value]) => {
+    formData.append(key, value as string);
+  });
+
+  // Append the file to be uploaded
+  formData.append("file", file);
+
+  // Send the form data to S3
+  try {
+    const s3Response = await axios.post(url, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    if (s3Response.status === 204) {
+      console.log("File uploaded successfully");
+    } else {
+      console.error(
+        "Failed to upload file:",
+        s3Response.status,
+        s3Response.data
+      );
+    }
+  } catch (error) {
+    console.error("Error uploading file:", error);
+  }
+}

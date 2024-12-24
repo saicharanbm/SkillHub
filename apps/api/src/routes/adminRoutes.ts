@@ -95,6 +95,7 @@ adminRouter.post("/signin", async (req, res) => {
     });
     res.json({ token: accessToken, message: "User successfully signed in" });
   } catch (error) {
+    console.log("signin error: ", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -139,6 +140,7 @@ adminRouter.post("/get-token", async (req, res) => {
 
     res.json({ token: accessToken, message: "token successfully generated" });
   } catch (error: any) {
+    console.log("get-token error: ", error);
     res.cookie("refreshToken", "", { httpOnly: true, expires: new Date(0) });
 
     if (error.name === "TokenExpiredError") {

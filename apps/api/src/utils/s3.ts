@@ -25,7 +25,7 @@ const s3 = new S3({
 export const getSecureUrl = async (
   destination: string,
   ContentType: string,
-  maxSize = 2048 // Default max size to 2KB
+  maxSize = 2 * 1024 * 1024 // Default max size to 2 MB
 ) => {
   const bucketName = process.env.BUCKET_NAME;
 
@@ -36,13 +36,13 @@ export const getSecureUrl = async (
   const id = uuid();
   const params: PresignedPostOptions = {
     Bucket: bucketName,
-    Key: `course/${destination}/${id}`,
+    Key: `course/${destination}/${id}`, // Matches Fields.key
     Conditions: [
       { "Content-Type": ContentType },
-      ["content-length-range", 0, maxSize], // Specify all 3 elements for content-length-range
+      ["content-length-range", 0, maxSize],
     ],
     Fields: {
-      key: `channel/${destination}/${id}`,
+      key: `course/${destination}/${id}`, // Matches Key
       "Content-Type": ContentType,
     },
     Expires: 300, // URL expiration in seconds

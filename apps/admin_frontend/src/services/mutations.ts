@@ -9,6 +9,7 @@ import {
   userLogin,
   userSignup,
   getSignedAvatarUrl,
+  uploadToS3,
 } from "./api";
 import axios from "axios";
 import { queryClient } from "../main";
@@ -60,9 +61,21 @@ export const useLoginMutation = () => {
 
 export const useCreateCourseMutation = () => {
   return useMutation({
-    mutationFn: async (data: getCourseAvatarUrlSchemaType) => {
+    mutationFn: async (data: {
+      name: string;
+      description: string;
+      avatar: File;
+    }) => {
       try {
-        const response = await getSignedAvatarUrl(data);
+        const { avatar, name, description } = data;
+        const { name: avatarName, size: avatarSize, type: avatarType } = avatar;
+        const response = await getSignedAvatarUrl({
+          avatarName,
+          avatarType,
+          avatarSize,
+        });
+        console.log(response.data);
+        await uploadToS3(response.data, avatar);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

@@ -1,5 +1,3 @@
-import React from "react";
-
 function UserModal() {
   return (
     <div className="absolute right-0 mt-2 w-64 bg-[rgba(25,30,37,.95)] rounded-md shadow-lg text-white">
