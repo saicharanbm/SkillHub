@@ -7,7 +7,43 @@ import {
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
 import { uuid } from "../utils";
+import { parse } from "dotenv";
 export const adminCourseRouter = Router();
+
+//get created courses
+adminCourseRouter.get("/", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const skip = (page - 1) * limit;
+    const courses = await client.course.findMany({
+      where: {
+        creatorId: req.userId,
+      },
+      skip,
+      take: limit,
+    });
+    //get total courses count
+    const totalCourses = await client.course.count({
+      where: {
+        creatorId: req.userId,
+      },
+    });
+    const totalPages = Math.ceil(totalCourses / limit);
+    res.json({
+      courses,
+      pagination: {
+        totalCourses,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+      },
+    });
+  } catch (error) {
+    console.log("Error getting courses:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 adminCourseRouter.post("/", async (req, res) => {
   const data = { ...req.body, price: parseInt(req.body.price, 10) };

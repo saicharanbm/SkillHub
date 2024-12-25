@@ -52,9 +52,9 @@ function CreateCourse() {
         <div className="title-container">
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-300 mb-1 "
+            className="block text-sm font-semibold text-gray-300 mb-1 "
           >
-            title
+            Title
           </label>
           <input
             type="text"
@@ -77,7 +77,7 @@ function CreateCourse() {
         <div className="description-container">
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-300 mb-1 "
+            className="block text-sm font-semibold text-gray-300 mb-1 "
           >
             Description
           </label>
@@ -102,7 +102,7 @@ function CreateCourse() {
         <div className="price-container">
           <label
             htmlFor="price"
-            className="block text-sm font-medium text-gray-300 mb-1"
+            className="block text-sm font-semibold text-gray-300 mb-1"
           >
             Price
           </label>
@@ -123,9 +123,9 @@ function CreateCourse() {
         <div className="thumbnail-container">
           <label
             htmlFor="thumbnail"
-            className="block text-sm font-medium text-gray-300 mb-1 "
+            className="block text-sm font-semibold text-gray-300 mb-1 "
           >
-            thumbnail
+            Thumbnail
           </label>
           <input
             type="file"
