@@ -3,10 +3,11 @@ import {
   loginSchemaType,
   signupSchemaType,
   getCourseThumbnailUrlSchemaType,
+  createCourseSchemaType,
 } from "../types";
 import { queryClient } from "../main";
 
-const baseURL = "http://localhost:3000/api/v1";
+const baseURL = "http://localhost:3000/api/v1/admin";
 
 export const axiosInstance = axios.create({
   baseURL,
@@ -66,23 +67,31 @@ axiosInstance.interceptors.response.use(
 );
 
 export const userSignup = (data: signupSchemaType) => {
-  return axiosInstance.post("/admin/signup", data);
+  return axiosInstance.post("/signup", data);
 };
 
 export const userLogin = (data: loginSchemaType) => {
-  return axiosInstance.post("/admin/signin", data);
+  return axiosInstance.post("/signin", data);
 };
 export const fetchUserData = () => {
-  return axiosInstance.get("/admin/user");
+  return axiosInstance.get("/user");
+};
+export const createCourse = (data: createCourseSchemaType) => {
+  return axiosInstance.post("/course", data);
 };
 
 export const getSignedCourseThumbnailUrl = (
   data: getCourseThumbnailUrlSchemaType
 ) => {
-  return axiosInstance.post("/admin/course/signed-thumbnail-url", data);
+  return axiosInstance.post("/course/signed-thumbnail-url", data);
 };
 
-export async function uploadToS3(response: any, file: File): Promise<void> {
+interface S3Response {
+  url: string;
+  fields: { [key: string]: string };
+}
+
+export async function uploadToS3(response: S3Response, file: File) {
   const { url, fields } = response;
 
   // Create a FormData object

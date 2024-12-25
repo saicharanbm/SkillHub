@@ -1,15 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import {
-  signupSchemaType,
-  loginSchemaType,
-  getCourseThumbnailUrlSchemaType,
-} from "../types";
+import { signupSchemaType, loginSchemaType } from "../types";
 import {
   axiosInstance,
   userLogin,
   userSignup,
   getSignedCourseThumbnailUrl,
   uploadToS3,
+  createCourse,
 } from "./api";
 import axios from "axios";
 import { queryClient } from "../main";
@@ -76,7 +73,14 @@ export const useCreateCourseMutation = () => {
         });
         console.log(response.data);
         await uploadToS3(response.data, thumbnail);
-        return response.data;
+
+        const courseResponse = await createCourse({
+          title,
+          description,
+          price,
+          thumbnailUrl: response.data.url,
+        });
+        return courseResponse.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           // Throw the server's error message
