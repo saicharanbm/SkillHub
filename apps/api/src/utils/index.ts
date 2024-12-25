@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
 import { TokenType } from "../types";
+import { v4 as uuid } from "uuid";
+
+export { uuid };
 
 export const generateToken = (
   userId: string,

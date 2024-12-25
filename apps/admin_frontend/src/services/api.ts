@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(
           withCredentials: true,
         });
 
-        const refreshResponse = await refreshAxios.post("/admin/get-token");
+        const refreshResponse = await refreshAxios.post("/get-token");
         console.log(refreshResponse.data);
         const newAccessToken = refreshResponse.data.token;
 

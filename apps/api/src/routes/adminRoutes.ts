@@ -101,6 +101,7 @@ adminRouter.post("/signin", async (req, res) => {
 });
 
 adminRouter.post("/get-token", async (req, res) => {
+  console.log("Hello");
   console.log(req.cookies.refreshToken);
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
@@ -176,4 +177,4 @@ adminRouter.post("/signout", async (req, res) => {
   res.cookie("refreshToken", "", { httpOnly: true, expires: new Date(0) });
   res.json({ message: "Logout successful" });
 });
-adminRouter.use("/course", adminCourseRouter);
+adminRouter.use("/course", verifyAdminMiddleware, adminCourseRouter);

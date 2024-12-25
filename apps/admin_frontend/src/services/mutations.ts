@@ -78,7 +78,7 @@ export const useCreateCourseMutation = () => {
           title,
           description,
           price,
-          thumbnailUrl: response.data.url,
+          thumbnailUrl: response.data.destination,
         });
         return courseResponse.data;
       } catch (error) {

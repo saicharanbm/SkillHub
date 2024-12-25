@@ -3,8 +3,7 @@ import {
   createPresignedPost,
   PresignedPostOptions,
 } from "@aws-sdk/s3-presigned-post";
-import { v4 as uuid } from "uuid";
-
+import { uuid } from "./index";
 if (
   !process.env.AWS_ACCESS_KEY_ID ||
   !process.env.AWS_SECRET_ACCESS_KEY ||
@@ -61,15 +60,17 @@ export const moveFile = async (tempKey: string, destinationKey: string) => {
   }
 
   try {
+    // Copy the file to the new destination
     await s3.copyObject({
       Bucket: bucketName,
       CopySource: `${bucketName}/${tempKey}`,
-      Key: destinationKey,
+      Key: destinationKey, // Use the destinationKey
     });
 
+    // Delete the file from the old location
     await s3.deleteObject({
       Bucket: bucketName,
-      Key: tempKey,
+      Key: tempKey, // Correct: Use only the tempKey
     });
 
     console.log(`File moved from ${tempKey} to ${destinationKey}`);

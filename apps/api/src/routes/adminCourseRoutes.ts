@@ -6,10 +6,13 @@ import {
 } from "@repo/zod-schemas/types";
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
+import { uuid } from "../utils";
 export const adminCourseRouter = Router();
 
 adminCourseRouter.post("/", async (req, res) => {
-  const response = courseSchema.safeParse(req.body);
+  const data = { ...req.body, price: parseInt(req.body.price, 10) };
+  console.log("adminCourseRouter post :", data);
+  const response = courseSchema.safeParse(data);
   if (!response.success) {
     res.status(400).json({ message: "Invalid request body" });
     return;
@@ -37,15 +40,13 @@ adminCourseRouter.post("/", async (req, res) => {
     // Now, move the thumbnail to the correct path
     try {
       // Move the thumbnail to the new path (course/userid/courseid/thumbnail)
-      await moveFile(
-        thumbnailUrl,
-        `course/${req.userId}/${course.id}/thumbnail`
-      );
+      const destination = `course/admin/${req.userId}/${course.id}/thumbnail/${uuid()}`;
+      await moveFile(thumbnailUrl, destination);
 
       // If the move is successful, update the course with the new thumbnail URL
       const updatedCourse = await client.course.update({
         where: { id: course.id },
-        data: { thumbnailUrl: `course/${req.userId}/${course.id}/thumbnail` },
+        data: { thumbnailUrl: destination },
       });
 
       res.json(updatedCourse);
@@ -61,8 +62,13 @@ adminCourseRouter.post("/", async (req, res) => {
         .status(500)
         .json({ message: "Internal server error: File move failed" });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.log("Error creating course:", error);
+    if (error.code === "P2002") {
+      // Prisma unique constraint error code
+      res.status(409).json({ message: "Course already exists" });
+      return;
+    }
     res
       .status(500)
       .json({ message: "Internal server error: Course creation failed" });
