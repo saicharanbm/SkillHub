@@ -1,9 +1,10 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useCreateCourseMutation } from "../../services/mutations";
 interface courseFormData {
-  name: string;
+  title: string;
   description: string;
-  avatar: FileList;
+  price: number;
+  thumbnail: FileList;
 }
 function CreateCourse() {
   const {
@@ -15,14 +16,15 @@ function CreateCourse() {
   const handleUpload: SubmitHandler<courseFormData> = (data) => {
     // Log file data
     console.log("Uploaded data:", data);
-    if (data.avatar.length > 0) {
-      console.log("Uploaded avatar:", data.avatar[0]);
+    if (data.thumbnail.length > 0) {
+      console.log("Uploaded thumbnail:", data.thumbnail[0]);
 
       createCourse(
         {
-          name: data.name,
+          title: data.title,
           description: data.description,
-          avatar: data.avatar[0],
+          price: data.price,
+          thumbnail: data.thumbnail[0],
         },
         {
           onSuccess: (data) => {
@@ -47,27 +49,29 @@ function CreateCourse() {
           Create Course
         </h1>
 
-        <div className="name-container">
+        <div className="title-container">
           <label
-            htmlFor="name"
+            htmlFor="title"
             className="block text-sm font-medium text-gray-300 mb-1 "
           >
-            Name
+            title
           </label>
           <input
             type="text"
-            id="name"
-            {...register("name", {
-              required: "Name is required",
+            id="title"
+            {...register("title", {
+              required: "title is required",
               minLength: {
                 value: 3,
-                message: "Name must be at least 3 characters long",
+                message: "title must be at least 3 characters long",
               },
             })}
-            placeholder="Enter course name"
+            placeholder="Enter course title"
             className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+          {errors.title && (
+            <p className="text-red-500">{errors.title.message}</p>
+          )}
         </div>
 
         <div className="description-container">
@@ -95,33 +99,54 @@ function CreateCourse() {
           )}
         </div>
 
-        <div className="avatar-container">
+        <div className="price-container">
           <label
-            htmlFor="avatar"
+            htmlFor="price"
+            className="block text-sm font-medium text-gray-300 mb-1"
+          >
+            Price
+          </label>
+          <input
+            id="price"
+            {...register("price", {
+              required: "Price is required",
+              validate: (value) => value >= 10 || "Price must be at least 10",
+            })}
+            placeholder="Enter course price"
+            className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+          />
+          {errors.price && (
+            <p className="text-red-500">{errors.price.message}</p>
+          )}
+        </div>
+
+        <div className="thumbnail-container">
+          <label
+            htmlFor="thumbnail"
             className="block text-sm font-medium text-gray-300 mb-1 "
           >
-            Avatar
+            thumbnail
           </label>
           <input
             type="file"
-            id="avatar"
-            {...register("avatar", {
-              required: "Avatar is required",
+            id="thumbnail"
+            {...register("thumbnail", {
+              required: "thumbnail is required",
               validate: {
                 fileSize: (files) =>
                   files?.[0]?.size <= 5 * 1024 * 1024 ||
-                  "Avatar size should be less than 5MB",
+                  "thumbnail size should be less than 5MB",
                 fileType: (files) =>
                   ["image/jpeg", "image/png", "image/gif"].includes(
                     files?.[0]?.type
                   ) || "Only JPEG, PNG, and GIF images are allowed",
               },
             })}
-            placeholder="Please add an Avatar"
+            placeholder="Please add an thumbnail"
             className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
-          {errors.avatar && (
-            <p className="text-red-500">{errors.avatar.message as string}</p>
+          {errors.thumbnail && (
+            <p className="text-red-500">{errors.thumbnail.message as string}</p>
           )}
         </div>
 

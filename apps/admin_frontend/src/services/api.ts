@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   loginSchemaType,
   signupSchemaType,
-  getCourseAvatarUrlSchemaType,
+  getCourseThumbnailUrlSchemaType,
 } from "../types";
 import { queryClient } from "../main";
 
@@ -76,8 +76,10 @@ export const fetchUserData = () => {
   return axiosInstance.get("/admin/user");
 };
 
-export const getSignedAvatarUrl = (data: getCourseAvatarUrlSchemaType) => {
-  return axiosInstance.post("/admin/course/signed-avatar-url", data);
+export const getSignedCourseThumbnailUrl = (
+  data: getCourseThumbnailUrlSchemaType
+) => {
+  return axiosInstance.post("/admin/course/signed-thumbnail-url", data);
 };
 
 export async function uploadToS3(response: any, file: File): Promise<void> {

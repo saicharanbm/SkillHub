@@ -2,13 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import {
   signupSchemaType,
   loginSchemaType,
-  getCourseAvatarUrlSchemaType,
+  getCourseThumbnailUrlSchemaType,
 } from "../types";
 import {
   axiosInstance,
   userLogin,
   userSignup,
-  getSignedAvatarUrl,
+  getSignedCourseThumbnailUrl,
   uploadToS3,
 } from "./api";
 import axios from "axios";
@@ -62,20 +62,20 @@ export const useLoginMutation = () => {
 export const useCreateCourseMutation = () => {
   return useMutation({
     mutationFn: async (data: {
-      name: string;
+      title: string;
       description: string;
-      avatar: File;
+      price: number;
+      thumbnail: File;
     }) => {
       try {
-        const { avatar, name, description } = data;
-        const { name: avatarName, size: avatarSize, type: avatarType } = avatar;
-        const response = await getSignedAvatarUrl({
-          avatarName,
-          avatarType,
-          avatarSize,
+        const { thumbnail, title, description, price } = data;
+        const { size: thumbnailSize, type: thumbnailType } = thumbnail;
+        const response = await getSignedCourseThumbnailUrl({
+          thumbnailType,
+          thumbnailSize,
         });
         console.log(response.data);
-        await uploadToS3(response.data, avatar);
+        await uploadToS3(response.data, thumbnail);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
