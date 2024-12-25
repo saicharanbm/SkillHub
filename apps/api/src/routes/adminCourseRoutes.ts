@@ -13,34 +13,32 @@ export const adminCourseRouter = Router();
 //get created courses
 adminCourseRouter.get("/", async (req, res) => {
   try {
-    const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
-    const skip = (page - 1) * limit;
+    const cursor = req.query.cursor as string | null;
+
+    if (!req.userId) {
+      res.status(400).json({ message: "User ID is required" });
+      return;
+    }
+
     const courses = await client.course.findMany({
       where: {
         creatorId: req.userId,
       },
-      skip,
       take: limit,
+      ...(cursor && { skip: 1, cursor: { id: cursor } }), // Skip the cursor item
+      orderBy: { id: "asc" },
     });
-    //get total courses count
-    const totalCourses = await client.course.count({
-      where: {
-        creatorId: req.userId,
-      },
-    });
-    const totalPages = Math.ceil(totalCourses / limit);
+
+    const nextCursor =
+      courses.length === limit ? courses[courses.length - 1].id : null;
+
     res.json({
       courses,
-      pagination: {
-        totalCourses,
-        totalPages,
-        currentPage: page,
-        pageSize: limit,
-      },
+      nextCursor,
     });
   } catch (error) {
-    console.log("Error getting courses:", error);
+    console.error("Error getting courses:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

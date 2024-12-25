@@ -124,3 +124,16 @@ export async function uploadToS3(response: S3Response, file: File) {
     console.error("Error uploading file:", error);
   }
 }
+
+//get all courses
+export const getAllCourses = async ({ pageParam }: { pageParam: number }) => {
+  try {
+    const response = await axiosInstance.get(
+      `/course?limit=10?cursor=${pageParam}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
+};
