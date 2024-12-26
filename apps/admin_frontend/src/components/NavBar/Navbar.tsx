@@ -28,7 +28,7 @@ const Navbar = ({ userData }: NavbarProps) => {
   };
 
   return (
-    <nav className="h-16 bg-[rgba(25,30,37,.8)] fixed top-0 w-full text-white flex items-center justify-between px-[7%] backdrop-blur-16 z-40">
+    <nav className="h-16 bg-[rgba(25,30,37,.8)] fixed top-0 w-full text-white flex items-center justify-between px-[7%] backdrop-blur-lg z-40">
       <div className="flex space-x-12">
         <div className="icon">
           <h1

@@ -1,8 +1,16 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 
+const ShimmerCard = () => (
+  <div className=" text-white p-4 rounded-md flex flex-col gap-2 shadow-lg animate-pulse">
+    <div className="w-full h-48 bg-gray-400 rounded-md"></div>
+    <div className="h-6 bg-gray-400 rounded-md mt-2"></div>
+    <div className="h-4 bg-gray-400 rounded-md mt-2"></div>
+  </div>
+);
+
 const Home = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetAllCoursesQuery();
 
   useEffect(() => {
@@ -26,32 +34,54 @@ const Home = () => {
   );
 
   return (
-    <div className="bg-gray-100 p-4">
+    <div className="p-4">
       <h1>Courses</h1>
-      <ul>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {data?.pages.map((page, pageIndex) =>
-          page.courses.map((course, index) => {
-            console.log("Rendering course:", course);
-            const isLast =
-              pageIndex === data.pages.length - 1 &&
-              index === page.courses.length - 1;
-            return (
-              <li
-                key={course.id}
-                ref={isLast ? lastCourseRef : null} // Attach ref to the last course
-              >
-                {course.title}
-                <br />
-                {course.description}
-                <br />
-                {course.price}
-              </li>
-            );
-          })
+          page.courses.map(
+            (
+              course: {
+                id: number;
+                title: string;
+                description: string;
+                price: number;
+                thumbnailUrl: string;
+              },
+              index: number
+            ) => {
+              console.log("Rendering course:", course);
+              const isLast =
+                pageIndex === data.pages.length - 1 &&
+                index === page.courses.length - 1;
+              return (
+                <div
+                  className="bg-[#1C1C1E] text-white p-4 rounded-md flex flex-col gap-2 shadow-lg"
+                  key={course.id}
+                  ref={isLast ? lastCourseRef : null}
+                >
+                  <img
+                    className="w-full object-cover rounded-md bg-white"
+                    style={{ aspectRatio: "1.77", display: "block" }}
+                    src={`https://transcoded-videos.saicharanbm.in/${course.thumbnailUrl}`}
+                    alt="Course Thumbnail"
+                  />
+                  <h1 className="text-lg font-semibold">{course.title}</h1>
+                  <p>Price: {course.price}₹</p>
+                </div>
+              );
+            }
+          )
         )}
-      </ul>
-      {isFetchingNextPage && <div>Loading more...</div>}
-      {!hasNextPage && <div>No more courses</div>}
+        {(isFetchingNextPage || isLoading) &&
+          Array.from({ length: 4 }).map((_, index) => (
+            <ShimmerCard key={`shimmer-${index}`} />
+          ))}
+      </div>
+      {!isLoading && !hasNextPage && (
+        <div className="text-center text-lg text-white pt-3">
+          No more courses to load
+        </div>
+      )}
     </div>
   );
 };
