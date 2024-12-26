@@ -1,9 +1,13 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 
 const Home = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetAllCoursesQuery();
+
+  useEffect(() => {
+    console.log("Fetched data:", data);
+  }, [data]);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastCourseRef = useCallback(
@@ -27,7 +31,7 @@ const Home = () => {
       <ul>
         {data?.pages.map((page, pageIndex) =>
           page.courses.map((course, index) => {
-            console.log(course);
+            console.log("Rendering course:", course);
             const isLast =
               pageIndex === data.pages.length - 1 &&
               index === page.courses.length - 1;
@@ -36,7 +40,11 @@ const Home = () => {
                 key={course.id}
                 ref={isLast ? lastCourseRef : null} // Attach ref to the last course
               >
-                {course.name}
+                {course.title}
+                <br />
+                {course.description}
+                <br />
+                {course.price}
               </li>
             );
           })

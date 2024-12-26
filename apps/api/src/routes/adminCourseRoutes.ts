@@ -13,26 +13,49 @@ export const adminCourseRouter = Router();
 //get created courses
 adminCourseRouter.get("/", async (req, res) => {
   try {
+    console.log(req.query);
+    // Parse limit and cursor from query parameters
     const limit = parseInt(req.query.limit as string, 10) || 10;
-    const cursor = req.query.cursor as string | null;
+    const cursor = req.query.cursor as string;
+    // console.log(parseInt(req.userId, 10));
 
+    // Ensure userId is available
     if (!req.userId) {
       res.status(400).json({ message: "User ID is required" });
       return;
     }
 
-    const courses = await client.course.findMany({
-      where: {
-        creatorId: req.userId,
-      },
-      take: limit,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }), // Skip the cursor item
-      orderBy: { id: "asc" },
-    });
+    // Initialize courses array
+    let courses;
+    if (!cursor || parseInt(cursor, 10) === 0) {
+      console.log("cursor is null");
+      // Fetch the first page of courses
+      courses = await client.course.findMany({
+        where: {
+          creatorId: req.userId,
+        },
+        take: limit,
+        orderBy: { id: "asc" },
+      });
+    } else {
+      console.log("cursor is not null");
+      // Fetch subsequent pages of courses using the cursor
+      courses = await client.course.findMany({
+        where: {
+          creatorId: req.userId,
+        },
+        take: limit,
+        cursor: { id: cursor },
+        skip: 1, // Skip the cursor item itself
+        orderBy: { id: "asc" },
+      });
+    }
 
+    // Determine the next cursor
     const nextCursor =
-      courses.length === limit ? courses[courses.length - 1].id : null;
+      courses.length > 0 ? courses[courses.length - 1].id : null;
 
+    // Send response
     res.json({
       courses,
       nextCursor,
@@ -42,7 +65,6 @@ adminCourseRouter.get("/", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 adminCourseRouter.post("/", async (req, res) => {
   const data = { ...req.body, price: parseInt(req.body.price, 10) };
   console.log("adminCourseRouter post :", data);
