@@ -1,6 +1,7 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 import ShimmerCard from "./shimmer/ShimmerCard";
+import CourseCard from "./course/CourseCard";
 
 const Home = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -72,22 +73,12 @@ const Home = () => {
                 pageIndex === data.pages.length - 1 &&
                 index === page.courses.length - 1;
               return (
-                <div
-                  className="bg-[#030712] text-white pb-4 overflow-hidden rounded-md flex flex-col gap-2 shadow-lg border-2 border-[#1F2937] cursor-pointer"
+                <CourseCard
                   key={course.id}
-                  ref={isLast ? lastCourseRef : null}
-                >
-                  <img
-                    className="w-full object-cover  bg-white"
-                    style={{ aspectRatio: "1.77", display: "block" }}
-                    src={`https://transcoded-videos.saicharanbm.in/${course.thumbnailUrl}`}
-                    alt="Course Thumbnail"
-                  />
-                  <h1 className="text-lg  font-semibold" title={course.title}>
-                    {course.title}{" "}
-                  </h1>
-                  <p>Price: ₹ {course.price / 100}</p>
-                </div>
+                  course={course}
+                  isLast={index === courses.length - 1}
+                  lastCourseRef={lastCourseRef}
+                />
               );
             }
           )

@@ -5,22 +5,37 @@ import {
   AiOutlineClockCircle,
 } from "react-icons/ai";
 import { IoMdCreate } from "react-icons/io";
-import { BsChatSquare } from "react-icons/bs";
+import { IoSettings } from "react-icons/io5";
+
 import { TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTextVisible, setIsTextVisible] = useState(false);
 
   const toggleSidebar = () => {
-    setIsOpen(!isOpen);
+    if (!isOpen) {
+      // Sidebar opening
+      setIsOpen(true);
+      setTimeout(() => {
+        setIsTextVisible(true);
+      }, 250); // Delay text visibility by 300ms
+    } else {
+      // Sidebar closing
+      setIsTextVisible(false);
+
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 100); // Match sidebar closing animation duration
+    }
   };
 
   return (
     <div
-      className={`h-screen bg-[#0A0B11] text-white fixed px-2 left-0 z-50 border-r-[1px] border-[#141920] ${
+      className={`h-screen bg-[#0A0B11] text-white fixed px-2 left-0 z-50 border-r-[1px] text-nowrap border-[#141920] ${
         isOpen ? "w-64" : "w-16"
-      } transition-all duration-300 over`}
+      } transition-width duration-300 overflow-hidden`}
     >
       {/* Toggle Button */}
       <div className="flex items-center space-x-4 py-3 px-1">
@@ -34,52 +49,83 @@ const Sidebar = () => {
             <AiOutlineMenu size={24} />
           )}
         </button>
-        {isOpen && <h1 className="text-xl font-semibold">Menu</h1>}
+        {isOpen && (
+          <span
+            className={`text-xl font-semibold transition-opacity duration-300 ${
+              isTextVisible ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            Menu
+          </span>
+        )}
       </div>
 
-      {/* Menu Items */}
       <ul className="mt-6 space-y-4">
-        {/* Home */}
         <li>
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `flex items-center space-x-4 px-3 py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
+              `flex items-center space-x-4 px-[11px] py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
               ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
             <AiOutlineHome size={24} />
-            {isOpen && <span>Home</span>}
+            <span
+              className={`transition-opacity duration-300 ${
+                isTextVisible ? "block opacity-100" : "hidden opacity-0"
+              }`}
+            >
+              Home
+            </span>
           </NavLink>
         </li>
 
-        {/* Create Course */}
         <li>
           <NavLink
             to="/create-course"
             className={({ isActive }) =>
-              `flex items-center space-x-4 px-3 py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
+              `flex items-center space-x-4 px-[11px] py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
               ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
             <IoMdCreate size={24} />
-            {isOpen && <span>Create Course</span>}
+            <span
+              className={`transition-opacity duration-300 ${
+                isTextVisible ? "block opacity-100" : "hidden opacity-0"
+              }`}
+            >
+              Create Course
+            </span>
           </NavLink>
         </li>
 
-        {/* Questions (Static) */}
         <li>
-          <div className="flex items-center space-x-4 px-4 py-3 hover:bg-gray-700 rounded-md cursor-pointer">
-            <BsChatSquare size={24} />
-            {isOpen && <span>Questions</span>}
+          <div className="flex items-center space-x-4 px-[11px] py-3 hover:bg-gray-700 rounded-md cursor-pointer">
+            <IoSettings size={24} />
+            <span
+              className={`transition-opacity duration-300 ${
+                isTextVisible ? "block opacity-100" : "hidden opacity-0"
+              }`}
+            >
+              Account & Settings
+            </span>
           </div>
         </li>
 
         {/* Watch History (Static) */}
         <li>
-          <div className="flex items-center space-x-4 px-4 py-3 hover:bg-gray-700 rounded-md cursor-pointer">
+          <div
+            className={` flex items-center  px-[11px] space-x-4  py-3 hover:bg-gray-700 rounded-md cursor-pointer`}
+          >
             <AiOutlineClockCircle size={24} />
-            {isOpen && <span>Watch History</span>}
+
+            <span
+              className={`transition-opacity duration-300 ${
+                isTextVisible ? "block opacity-100" : "hidden opacity-0"
+              }`}
+            >
+              Watch History
+            </span>
           </div>
         </li>
       </ul>
