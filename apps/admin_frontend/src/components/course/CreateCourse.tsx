@@ -23,7 +23,7 @@ function CreateCourse() {
         {
           title: data.title,
           description: data.description,
-          price: data.price,
+          price: data.price * 100,
           thumbnail: data.thumbnail[0],
         },
         {

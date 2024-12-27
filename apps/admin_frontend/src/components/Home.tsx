@@ -1,21 +1,18 @@
-import React, { useRef, useCallback, useEffect } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 
 const ShimmerCard = () => (
   <div className=" text-white p-4 rounded-md flex flex-col gap-2 shadow-lg animate-pulse">
-    <div className="w-full h-48 bg-gray-400 rounded-md"></div>
-    <div className="h-6 bg-gray-400 rounded-md mt-2"></div>
-    <div className="h-4 bg-gray-400 rounded-md mt-2"></div>
+    <div className="w-full h-48 bg-[#3F3F3F] rounded-md"></div>
+    <div className="h-6 bg-[#3F3F3F] rounded-md mt-2"></div>
+    <div className="h-4 bg-[#3F3F3F] rounded-md mt-2"></div>
   </div>
 );
 
 const Home = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetAllCoursesQuery();
-
-  useEffect(() => {
-    console.log("Fetched data:", data);
-  }, [data]);
+  const [shimmerCount, setShimmerCount] = useState(4);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastCourseRef = useCallback(
@@ -24,7 +21,6 @@ const Home = () => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
-          console.log("Fetching next page...");
           fetchNextPage();
         }
       });
@@ -32,6 +28,36 @@ const Home = () => {
     },
     [isFetchingNextPage, fetchNextPage, hasNextPage]
   );
+
+  useEffect(() => {
+    const calculateShimmerCount = () => {
+      const gridElement = document.querySelector(".grid");
+      if (gridElement) {
+        const gridStyles = window.getComputedStyle(gridElement);
+        const gridGap = parseFloat(gridStyles.gap || "0");
+        const gridTemplateColumns = gridStyles.getPropertyValue(
+          "grid-template-columns"
+        );
+        const cardsPerRow = gridTemplateColumns.split(" ").length;
+        const cardHeight = 250;
+        const visibleHeight = window.innerHeight;
+        const rowsVisible = Math.ceil(visibleHeight / (cardHeight + gridGap));
+        const totalVisibleCards = cardsPerRow * rowsVisible;
+
+        console.log("Rows visible:", rowsVisible);
+        console.log("Cards per row:", cardsPerRow);
+        console.log("Total cards visible:", totalVisibleCards);
+
+        setShimmerCount(totalVisibleCards);
+      }
+    };
+
+    calculateShimmerCount();
+    window.addEventListener("resize", calculateShimmerCount);
+    return () => {
+      window.removeEventListener("resize", calculateShimmerCount);
+    };
+  }, []);
 
   return (
     <div className="p-4">
@@ -49,7 +75,6 @@ const Home = () => {
               },
               index: number
             ) => {
-              console.log("Rendering course:", course);
               const isLast =
                 pageIndex === data.pages.length - 1 &&
                 index === page.courses.length - 1;
@@ -66,14 +91,14 @@ const Home = () => {
                     alt="Course Thumbnail"
                   />
                   <h1 className="text-lg font-semibold">{course.title}</h1>
-                  <p>Price: {course.price}₹</p>
+                  <p>Price: ₹ {course.price / 100}</p>
                 </div>
               );
             }
           )
         )}
         {(isFetchingNextPage || isLoading) &&
-          Array.from({ length: 4 }).map((_, index) => (
+          Array.from({ length: shimmerCount }).map((_, index) => (
             <ShimmerCard key={`shimmer-${index}`} />
           ))}
       </div>
