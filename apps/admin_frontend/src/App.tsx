@@ -5,7 +5,7 @@ import Sidebar from "./components/SideBar";
 import useAuth from "./hooks/useAuth";
 
 function App() {
-  const { userData } = useAuth();
+  const { userData, isLoading } = useAuth();
   return (
     <div className="bg-[#00050D] w-full min-h-screen pt-16">
       <Navbar userData={userData} />

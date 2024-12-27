@@ -4,7 +4,7 @@ import UserModal from "./UserModal";
 // import { IoMdSearch } from "react-icons/io";
 
 type NavbarProps = {
-  userData?: { avatarUrl: string };
+  userData?: { avatarUrl: string; fullName: string };
 };
 const Navbar = ({ userData }: NavbarProps) => {
   const defaultAvatar = useRef(
@@ -28,7 +28,7 @@ const Navbar = ({ userData }: NavbarProps) => {
   };
 
   return (
-    <nav className="h-16 bg-[#00050D] fixed top-0 w-full text-white flex items-center justify-between px-[7%] border-b-[1px] border-[#141920] z-40">
+    <nav className="h-16 bg-[#00050D] fixed top-0 w-full text-white flex items-center justify-between px-[7%] border-b-2 border-[#262d38] z-40">
       <div className="flex space-x-12">
         <div className="icon">
           <h1
@@ -36,9 +36,7 @@ const Navbar = ({ userData }: NavbarProps) => {
             onClick={() => navigate("/")}
           >
             <span className="font-bebas">Skill</span>
-            <span className="bg-[#F89A28] px-1 rounded-md text-[#000] font-helvetica">
-              Hub
-            </span>
+            <span className=" text-[#F89A28] font-helvetica">hub</span>
           </h1>
         </div>
       </div>
@@ -57,7 +55,7 @@ const Navbar = ({ userData }: NavbarProps) => {
               className="w-10 h-10 rounded-full"
             />
           </div>
-          {isDropdownOpen && <UserModal />}
+          {isDropdownOpen && <UserModal fullName={userData.fullName} />}
         </div>
       ) : (
         <div className="flex items-center space-x-4">
@@ -66,10 +64,9 @@ const Navbar = ({ userData }: NavbarProps) => {
               key={index}
               to={authPath}
               className={({ isActive }) =>
-                `text-lg p-1 rounded cursor-pointer ${
-                  isActive
-                    ? "bg-white text-gray-800 opacity-50 font-semibold"
-                    : "hover:bg-white hover:text-gray-800"
+                `text-lg p-1 rounded cursor-pointer hover:bg-[#F89A28] hover:opacity-100 hover:font-semibold hover:text-gray-800 ${
+                  isActive &&
+                  "bg-[#F89A28] text-gray-800 opacity-50 font-semibold"
                 }`
               }
             >

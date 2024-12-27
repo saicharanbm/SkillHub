@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 
 const ShimmerCard = () => (
@@ -80,7 +80,7 @@ const Home = () => {
                 index === page.courses.length - 1;
               return (
                 <div
-                  className="bg-[#030712] text-white pb-4 overflow-hidden rounded-md flex flex-col gap-2 shadow-lg border-[1px] border-gray-600 cursor-pointer"
+                  className="bg-[#030712] text-white pb-4 overflow-hidden rounded-md flex flex-col gap-2 shadow-lg border-2 border-[#1F2937] cursor-pointer"
                   key={course.id}
                   ref={isLast ? lastCourseRef : null}
                 >
@@ -90,7 +90,7 @@ const Home = () => {
                     src={`https://transcoded-videos.saicharanbm.in/${course.thumbnailUrl}`}
                     alt="Course Thumbnail"
                   />
-                  <h1 className="text-lg font-semibold" title={course.title}>
+                  <h1 className="text-lg  font-semibold" title={course.title}>
                     {course.title}{" "}
                   </h1>
                   <p>Price: ₹ {course.price / 100}</p>

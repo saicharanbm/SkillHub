@@ -12,7 +12,7 @@ const AuthRoute = ({
   const { userData, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-white">Loading...</div>;
   }
 
   if (isProtected && !userData) {

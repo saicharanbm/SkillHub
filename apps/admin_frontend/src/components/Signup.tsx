@@ -161,10 +161,9 @@ function Signup() {
             <button
               type="submit"
               //   disabled={isPending}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg transition duration-300"
+              className="w-full bg-[#F89A28] hover:opacity-70  text-black text-lg font-semibold py-3 rounded-lg transition duration-300"
             >
-              {isPending ? "Signing up..." : "Sign Up"}
-              Signup
+              {isPending ? "Signing up..." : "Signup"}
             </button>
           </div>
         </form>
@@ -173,7 +172,7 @@ function Signup() {
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-blue-400 font-semibold hover:underline "
+            className="text-[#F89A28] font-semibold hover:underline "
           >
             Log In
           </Link>

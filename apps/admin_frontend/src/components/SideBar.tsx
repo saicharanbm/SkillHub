@@ -18,7 +18,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-[#00050D] text-white fixed top-0 px-2 left-0 z-50 border-r-[1px] border-[#141920] ${
+      className={`h-screen bg-[#0A0B11] text-white fixed px-2 left-0 z-50 border-r-[1px] border-[#141920] ${
         isOpen ? "w-64" : "w-16"
       } transition-all duration-300 over`}
     >
@@ -26,7 +26,7 @@ const Sidebar = () => {
       <div className="flex items-center space-x-4 py-3 px-1">
         <button
           onClick={toggleSidebar}
-          className="text-white hover:bg-gray-700 p-2 rounded-md"
+          className="text-[#F89A28] hover:bg-gray-700 p-2 rounded-md"
         >
           {isOpen ? (
             <TbLayoutSidebarRightExpandFilled size={24} />
@@ -45,7 +45,7 @@ const Sidebar = () => {
             to="/"
             className={({ isActive }) =>
               `flex items-center space-x-4 px-3 py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
-              ${isActive ? "bg-gray-700 text-[#3B81F6]" : "text-white"}`
+              ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
             <AiOutlineHome size={24} />
@@ -59,7 +59,7 @@ const Sidebar = () => {
             to="/create-course"
             className={({ isActive }) =>
               `flex items-center space-x-4 px-3 py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
-              ${isActive ? "bg-gray-700 text-[#3B81F6]" : "text-white"}`
+              ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
             <IoMdCreate size={24} />

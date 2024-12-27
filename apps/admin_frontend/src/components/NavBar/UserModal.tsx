@@ -1,8 +1,8 @@
-function UserModal() {
+function UserModal({ fullName }: { fullName: string }) {
   return (
     <div className="absolute right-0 mt-2 w-64 bg-[rgba(25,30,37,.95)] rounded-md shadow-lg text-white">
       <div className="px-4 py-2 border-b border-gray-600 text-sm">
-        <p>Your Account</p>
+        <p className="text-[#F89A28]">Hello {fullName}</p>
       </div>
       <ul className="py-2">
         <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">Help</li>
