@@ -1,13 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
-
-const ShimmerCard = () => (
-  <div className=" text-white p-4 rounded-md flex flex-col gap-2 shadow-lg animate-pulse">
-    <div className="w-full h-48 bg-[#3F3F3F] rounded-md"></div>
-    <div className="h-6 bg-[#3F3F3F] rounded-md mt-2"></div>
-    <div className="h-4 bg-[#3F3F3F] rounded-md mt-2"></div>
-  </div>
-);
+import ShimmerCard from "./shimmer/ShimmerCard";
 
 const Home = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -101,7 +94,7 @@ const Home = () => {
         )}
         {(isFetchingNextPage || isLoading) &&
           Array.from({ length: shimmerCount }).map((_, index) => (
-            <ShimmerCard key={`shimmer-${index}`} />
+            <ShimmerCard key={index} />
           ))}
       </div>
       {!isLoading && !hasNextPage && (

@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ROUTES } from "../constants/routes";
+import ShimmerCard from "./shimmer/ShimmerCard";
 
 const AuthRoute = ({
   children,
@@ -12,7 +13,13 @@ const AuthRoute = ({
   const { userData, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="text-white">Loading...</div>;
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <ShimmerCard key={index} />
+        ))}
+      </>
+    );
   }
 
   if (isProtected && !userData) {
