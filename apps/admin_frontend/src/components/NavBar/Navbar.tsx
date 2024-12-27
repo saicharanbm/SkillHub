@@ -28,16 +28,17 @@ const Navbar = ({ userData }: NavbarProps) => {
   };
 
   return (
-    <nav className="h-16 bg-[rgba(25,30,37,.8)] fixed top-0 w-full text-white flex items-center justify-between px-[7%] backdrop-blur-lg z-40">
+    <nav className="h-16 bg-[#00050D] fixed top-0 w-full text-white flex items-center justify-between px-[7%] border-b-[1px] border-[#141920] z-40">
       <div className="flex space-x-12">
         <div className="icon">
           <h1
-            className="text-3xl font-bold text-[#3F7AE9] cursor-pointer"
-            onClick={() => {
-              navigate("/");
-            }}
+            className="text-3xl font-bold tracking-wider text-[#fff] cursor-pointer"
+            onClick={() => navigate("/")}
           >
-            LearnLab
+            <span className="font-bebas">Skill</span>
+            <span className="bg-[#F89A28] px-1 rounded-md text-[#000] font-helvetica">
+              Hub
+            </span>
           </h1>
         </div>
       </div>

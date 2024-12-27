@@ -61,7 +61,7 @@ const Home = () => {
 
   return (
     <div className="p-4">
-      <h1>Courses</h1>
+      {/* <h1>Courses</h1> */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {data?.pages.map((page, pageIndex) =>
           page.courses.map(
@@ -80,17 +80,19 @@ const Home = () => {
                 index === page.courses.length - 1;
               return (
                 <div
-                  className="bg-[#1C1C1E] text-white p-4 rounded-md flex flex-col gap-2 shadow-lg"
+                  className="bg-[#030712] text-white pb-4 overflow-hidden rounded-md flex flex-col gap-2 shadow-lg border-[1px] border-gray-600 cursor-pointer"
                   key={course.id}
                   ref={isLast ? lastCourseRef : null}
                 >
                   <img
-                    className="w-full object-cover rounded-md bg-white"
+                    className="w-full object-cover  bg-white"
                     style={{ aspectRatio: "1.77", display: "block" }}
                     src={`https://transcoded-videos.saicharanbm.in/${course.thumbnailUrl}`}
                     alt="Course Thumbnail"
                   />
-                  <h1 className="text-lg font-semibold">{course.title}</h1>
+                  <h1 className="text-lg font-semibold" title={course.title}>
+                    {course.title}{" "}
+                  </h1>
                   <p>Price: ₹ {course.price / 100}</p>
                 </div>
               );

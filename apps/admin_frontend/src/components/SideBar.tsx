@@ -18,7 +18,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-[#141920] text-white fixed top-0 px-2 left-0 z-50 ${
+      className={`h-screen bg-[#00050D] text-white fixed top-0 px-2 left-0 z-50 border-r-[1px] border-[#141920] ${
         isOpen ? "w-64" : "w-16"
       } transition-all duration-300 over`}
     >
