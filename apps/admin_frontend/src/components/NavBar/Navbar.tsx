@@ -35,7 +35,7 @@ const Navbar = ({ userData }: NavbarProps) => {
             className="text-3xl font-bold tracking-wider text-[#fff] cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <span className="font-bebas">Skill</span>
+            <span>Skill</span>
             <span className=" text-[#F89A28] font-helvetica">hub</span>
           </h1>
         </div>

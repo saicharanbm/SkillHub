@@ -1,24 +1,35 @@
 import { useGetCourseQuery } from "../../services/queries";
 import { useParams } from "react-router-dom";
+import CourseHeader from "./CourseHeader";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 function CoursePage() {
   const { id } = useParams();
-  const {
-    data: course,
-    isLoading,
-    isFetching,
-  } = useGetCourseQuery(id as string);
+  const navigate = useNavigate();
+  const { data: course } = useGetCourseQuery(id as string);
 
   // 1) header with title, description and price
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-white">Course</h1>
-      {isFetching && <p className="text-lg text-gray-400">Fetching...</p>}
-      {isLoading && <p className="text-lg text-gray-400">Loading...</p>}
+    <div className="w-full min-h-[100vh-4rem] py-4">
       {course && (
-        <div>
-          <h2 className="text-2xl font-bold text-white">{course.title}</h2>
-          <p className="text-lg text-gray-400">{course.description}</p>
-          <p className="text-lg text-gray-400">Price: {course.price}</p>
+        <div className="w-full  bg-[#1C1C1E] rounded-md overflow-hidden">
+          <CourseHeader
+            title={course.title}
+            description={course.description}
+            price={course.price}
+            thumbnailUrl={course.thumbnailUrl}
+          />
+          <div className="p-4 w-full flex justify-end ">
+            <button
+              onClick={() => {
+                navigate(`/course/${id}/create-section`);
+              }}
+              className="bg-[#F89A28] px-4 py-2 text-[#1C1C1E] font-semibold rounded-sm hover:opacity-70 flex  items-center gap-2 text-lg  justify-center cursor-pointer"
+            >
+              <MdOutlineAddCircleOutline />
+              Add Section
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -154,7 +154,7 @@ function CreateCourse() {
           <button
             disabled={isPending}
             type="submit"
-            className="bg-[#F89A28] text-black text-lg font-semibold rounded-lg py-3 px-6 hover:bg-blue-700 focus:outline-none"
+            className="bg-[#F89A28] text-black text-lg font-semibold rounded-lg py-3 px-6 hover:opacity-70 focus:outline-none"
           >
             {isPending ? "Creating..." : "Create Course"}
           </button>
