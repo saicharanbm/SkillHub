@@ -191,7 +191,14 @@ adminCourseRouter.get("/:id", async (req, res) => {
 
 //add new sections to the course
 adminCourseRouter.post("/:id/section", async (req, res) => {
-  res.send("Admin Add Section to Course route");
+  if (!req.userId) {
+    res.status(401).json({ message: "Unauthorized: User not found" });
+    return;
+  }
+  try {
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 adminCourseRouter.put("/:id/section/:sectionId", async (req, res) => {
