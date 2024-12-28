@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 import ShimmerCard from "./shimmer/ShimmerCard";
 import CourseCard from "./course/CourseCard";
@@ -7,7 +7,6 @@ import useIsDesktop from "../hooks/useIsDesktop";
 const Home = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetAllCoursesQuery();
-  const [shimmerCount, setShimmerCount] = useState(4);
   const isDesktop = useIsDesktop();
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -24,36 +23,6 @@ const Home = () => {
     },
     [isFetchingNextPage, fetchNextPage, hasNextPage]
   );
-
-  useEffect(() => {
-    const calculateShimmerCount = () => {
-      const gridElement = document.querySelector(".grid");
-      if (gridElement) {
-        const gridStyles = window.getComputedStyle(gridElement);
-        const gridGap = parseFloat(gridStyles.gap || "0");
-        const gridTemplateColumns = gridStyles.getPropertyValue(
-          "grid-template-columns"
-        );
-        const cardsPerRow = gridTemplateColumns.split(" ").length;
-        const cardHeight = 250;
-        const visibleHeight = window.innerHeight;
-        const rowsVisible = Math.ceil(visibleHeight / (cardHeight + gridGap));
-        const totalVisibleCards = cardsPerRow * rowsVisible;
-
-        console.log("Rows visible:", rowsVisible);
-        console.log("Cards per row:", cardsPerRow);
-        console.log("Total cards visible:", totalVisibleCards);
-
-        setShimmerCount(totalVisibleCards);
-      }
-    };
-
-    calculateShimmerCount();
-    window.addEventListener("resize", calculateShimmerCount);
-    return () => {
-      window.removeEventListener("resize", calculateShimmerCount);
-    };
-  }, []);
 
   return (
     <div className="w-full p-4">
