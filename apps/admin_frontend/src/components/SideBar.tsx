@@ -1,10 +1,6 @@
 import { useState } from "react";
-import {
-  AiOutlineMenu,
-  AiOutlineHome,
-  AiOutlineClockCircle,
-} from "react-icons/ai";
-import { IoMdCreate } from "react-icons/io";
+import { AiOutlineMenu, AiOutlineClockCircle } from "react-icons/ai";
+import { IoMdCreate, IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 
 import { TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
@@ -69,7 +65,7 @@ const Sidebar = () => {
               ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
-            <AiOutlineHome size={24} />
+            <IoMdHome size={24} />
             <span
               className={`transition-opacity duration-300 ${
                 isTextVisible ? "block opacity-100" : "hidden opacity-0"

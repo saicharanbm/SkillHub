@@ -12,6 +12,7 @@ import AuthRoute from "./components/AuthRoute.tsx";
 import CreateCourse from "./components/course/CreateCourse.tsx";
 import Home from "./components/Home.tsx";
 import Account from "./components/Account.tsx";
+import CoursePage from "./components/course/CoursePage.tsx";
 
 export const queryClient = new QueryClient();
 
@@ -57,6 +58,14 @@ const router = createBrowserRouter([
         element: (
           <AuthRoute isProtected={true}>
             <Account />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/course/:id",
+        element: (
+          <AuthRoute isProtected={true}>
+            <CoursePage />
           </AuthRoute>
         ),
       },

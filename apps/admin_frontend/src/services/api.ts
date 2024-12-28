@@ -85,6 +85,9 @@ export const getSignedCourseThumbnailUrl = (
 ) => {
   return axiosInstance.post("/course/signed-thumbnail-url", data);
 };
+export const getCourse = async (id: string) => {
+  return axiosInstance.get(`/course/${id}`);
+};
 
 interface S3Response {
   url: string;

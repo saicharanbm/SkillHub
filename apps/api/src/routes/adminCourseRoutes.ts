@@ -65,6 +65,7 @@ adminCourseRouter.get("/", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+//crete course
 adminCourseRouter.post("/", async (req, res) => {
   const data = { ...req.body, price: parseInt(req.body.price, 10) };
   console.log("adminCourseRouter post :", data);
@@ -158,11 +159,37 @@ adminCourseRouter.post("/signed-thumbnail-url", async (req, res) => {
   }
 });
 
-adminCourseRouter.put("/:id", async (req, res) => {
-  res.send("Admin Update Course route");
+// get specific course details
+adminCourseRouter.get("/:id", async (req, res) => {
+  if (!req.userId) {
+    res.status(401).json({ message: "Unauthorized: User not found" });
+    return;
+  }
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const course = await client.course.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!course) {
+      res.status(404).json({ message: "Course not found" });
+      return;
+    }
+    if (course.creatorId !== req.userId) {
+      res
+        .status(401)
+        .json({ message: "Unauthorized: You dont own this course" });
+      return;
+    }
+    res.json(course);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
-//add new sections to the course
 
+//add new sections to the course
 adminCourseRouter.post("/:id/section", async (req, res) => {
   res.send("Admin Add Section to Course route");
 });
@@ -188,6 +215,7 @@ adminCourseRouter.put(
   }
 );
 
+//delete contents from the s3 and then delete the course
 adminCourseRouter.delete("/:id", async (req, res) => {
   res.send("Admin Delete Course route");
 });

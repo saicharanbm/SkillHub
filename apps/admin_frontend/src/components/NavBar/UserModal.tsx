@@ -1,7 +1,6 @@
 import { MdOutlineLogout } from "react-icons/md";
-import { IoMdCreate } from "react-icons/io";
+import { IoMdCreate, IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
-import { AiOutlineHome } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 function UserModal({ fullName }: { fullName: string }) {
   return (
@@ -15,18 +14,18 @@ function UserModal({ fullName }: { fullName: string }) {
         <NavLink
           to={"/"}
           className={({ isActive }) =>
-            `px-4 py-2 hover:bg-gray-700 cursor-pointer flex space-x-2 items-center ${
-              isActive ? "bg-gray-700 text-[#F89A28]" : ""
+            `px-4 py-2 hover:text-[#F89A28] cursor-pointer flex space-x-2 items-center ${
+              isActive && "bg-gray-700 text-[#F89A28] font-semibold"
             }`
           }
         >
-          <AiOutlineHome /> <p>Home</p>
+          <IoMdHome className="text-xl" /> <p>Home</p>
         </NavLink>
         <NavLink
           to={"/create-course"}
           className={({ isActive }) =>
-            `px-4 py-2 hover:bg-gray-700 cursor-pointer flex space-x-2 items-center ${
-              isActive ? "bg-gray-700 text-[#F89A28]" : ""
+            `px-4 py-2 hover:text-[#F89A28] cursor-pointer flex space-x-2 items-center ${
+              isActive && "bg-gray-700 text-[#F89A28] font-semibold"
             }`
           }
         >
@@ -35,8 +34,8 @@ function UserModal({ fullName }: { fullName: string }) {
         <NavLink
           to={"/account-setting"}
           className={({ isActive }) =>
-            `px-4 py-2 hover:bg-gray-700  cursor-pointer flex space-x-2 items-center ${
-              isActive ? "bg-gray-700 text-[#F89A28]" : ""
+            `px-4 py-2 hover:text-[#F89A28] cursor-pointer flex space-x-2 items-center ${
+              isActive && "bg-gray-700 text-[#F89A28] font-semibold"
             }`
           }
         >
