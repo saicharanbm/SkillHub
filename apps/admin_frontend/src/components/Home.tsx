@@ -11,7 +11,7 @@ const Home = () => {
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastCourseRef = useCallback(
-    (node) => {
+    (node: HTMLDivElement) => {
       if (isFetchingNextPage) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
