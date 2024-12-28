@@ -54,14 +54,14 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="w-full p-4">
       {/* <h1>Courses</h1> */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         {data?.pages.map((page, pageIndex) =>
           page.courses.map(
             (
               course: {
-                id: number;
+                id: string;
                 title: string;
                 description: string;
                 price: number;
@@ -76,7 +76,7 @@ const Home = () => {
                 <CourseCard
                   key={course.id}
                   course={course}
-                  isLast={index === courses.length - 1}
+                  isLast={isLast}
                   lastCourseRef={lastCourseRef}
                 />
               );

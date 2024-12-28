@@ -28,7 +28,7 @@ const Navbar = ({ userData }: NavbarProps) => {
   };
 
   return (
-    <nav className="h-16 bg-[#00050D] fixed top-0 w-full text-white flex items-center justify-between px-[7%] border-b-2 border-[#262d38] z-40">
+    <nav className="h-16 bg-[#00050D] fixed top-0 w-full text-white flex items-center justify-between px-[6%] border-b-2 border-[#262d38] z-40">
       <div className="flex space-x-12">
         <div className="icon">
           <h1

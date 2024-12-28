@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ROUTES } from "../constants/routes";
 import ShimmerCard from "./shimmer/ShimmerCard";
+import Spinner from "./shimmer/Spinner";
 
 const AuthRoute = ({
   children,
@@ -14,11 +15,9 @@ const AuthRoute = ({
 
   if (isLoading) {
     return (
-      <>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <ShimmerCard key={index} />
-        ))}
-      </>
+      <div className="h-[calc(100vh-8rem)] w-full  flex justify-center items-center ">
+        <Spinner />
+      </div>
     );
   }
 
