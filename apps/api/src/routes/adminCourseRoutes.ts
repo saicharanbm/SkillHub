@@ -3,6 +3,7 @@ import { verifyAdminMiddleware } from "../middlewares/verifyAdminMiddleware";
 import {
   getCourseThumbnailUrlSchema,
   courseSchema,
+  sectionSchema,
 } from "@repo/zod-schemas/types";
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
@@ -196,7 +197,42 @@ adminCourseRouter.post("/:id/section", async (req, res) => {
     return;
   }
   try {
-  } catch (error) {
+    const id = req.params.id;
+    const request = sectionSchema.safeParse(req.body);
+    if (!request.success) {
+      res.status(400).json({ message: "Invalid request body" });
+      return;
+    }
+    const course = await client.course.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!course) {
+      res.status(404).json({ message: "Course not found" });
+      return;
+    }
+    if (course.creatorId !== req.userId) {
+      res
+        .status(401)
+        .json({ message: "Unauthorized: You dont own this course" });
+      return;
+    }
+    const section = await client.section.create({
+      data: {
+        title: req.body.title,
+        courseId: id,
+      },
+    });
+
+    res.json({ message: "Section added successfully" });
+  } catch (error: any) {
+    if (error.code === "P2002") {
+      // Prisma unique constraint error code
+      res.status(409).json({ message: "Section already exists" });
+      return;
+    }
+
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
