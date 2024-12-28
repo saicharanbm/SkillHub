@@ -14,6 +14,7 @@ import Home from "./components/Home.tsx";
 import Account from "./components/Account.tsx";
 import CoursePage from "./components/course/CoursePage.tsx";
 import CreateSection from "./components/course/section/CreateSection.tsx";
+import Analytics from "./components/Analytics.tsx";
 
 export const queryClient = new QueryClient();
 
@@ -75,6 +76,14 @@ const router = createBrowserRouter([
         element: (
           <AuthRoute isProtected={true}>
             <CreateSection />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/analytics",
+        element: (
+          <AuthRoute isProtected={true}>
+            <Analytics />
           </AuthRoute>
         ),
       },

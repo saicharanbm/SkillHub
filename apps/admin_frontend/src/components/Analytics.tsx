@@ -1,4 +1,4 @@
-function Account() {
+function Analytics() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
       <div className="text-center">
@@ -18,4 +18,4 @@ function Account() {
   );
 }
 
-export default Account;
+export default Analytics;
