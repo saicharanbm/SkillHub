@@ -2,11 +2,13 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import { useGetAllCoursesQuery } from "../services/queries";
 import ShimmerCard from "./shimmer/ShimmerCard";
 import CourseCard from "./course/CourseCard";
+import useIsDesktop from "../hooks/useIsDesktop";
 
 const Home = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetAllCoursesQuery();
   const [shimmerCount, setShimmerCount] = useState(4);
+  const isDesktop = useIsDesktop();
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastCourseRef = useCallback(
@@ -84,9 +86,9 @@ const Home = () => {
           )
         )}
         {(isFetchingNextPage || isLoading) &&
-          Array.from({ length: shimmerCount }).map((_, index) => (
-            <ShimmerCard key={index} />
-          ))}
+          Array.from({ length: parseInt(`${isDesktop ? 10 : 4}`, 10) }).map(
+            (_, index) => <ShimmerCard key={index} />
+          )}
       </div>
       {!isLoading && !hasNextPage && (
         <div className="text-center text-lg text-white pt-3">

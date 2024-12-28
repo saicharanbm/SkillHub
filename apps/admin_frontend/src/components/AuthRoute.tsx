@@ -1,7 +1,6 @@
 import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ROUTES } from "../constants/routes";
-import ShimmerCard from "./shimmer/ShimmerCard";
 import Spinner from "./shimmer/Spinner";
 
 const AuthRoute = ({
