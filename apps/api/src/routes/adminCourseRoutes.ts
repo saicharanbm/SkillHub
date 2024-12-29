@@ -223,6 +223,75 @@ adminCourseRouter.post("/:id/section", async (req, res) => {
   }
 });
 
+//get signed url to upload content of the course section to s3
+adminCourseRouter.post(
+  "/:id/section/:sectionId/content/signed-url",
+  async (req, res) => {
+    if (!req.userId) {
+      res.status(401).json({ message: "Unauthorized: User not found" });
+      return;
+    }
+
+    const { id, sectionId } = req.params;
+
+    try {
+      // Validate that the section belongs to the course
+      const section = await client.section.findFirst({
+        where: {
+          id: sectionId,
+          courseId: id,
+        },
+      });
+
+      if (!section) {
+        res.status(404).json({
+          message: "Section not found or does not belong to the course.",
+        });
+        return;
+      }
+
+      // Validate course ownership
+      const course = await client.course.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!course) {
+        res.status(404).json({
+          message: "Course not found.",
+        });
+        return;
+      }
+
+      if (course.creatorId !== req.userId) {
+        res
+          .status(403)
+          .json({ message: "Forbidden: You don't own this course." });
+        return;
+      }
+
+      // Validate request body
+      const request = getCourseSectionContentUrlSchema.safeParse(req.body);
+      console.log("signed-course-section-content-body:", req.body);
+
+      if (!request.success) {
+        res.status(400).json({ message: "Invalid request body" });
+        return;
+      }
+
+      // Generate signed URL
+      const { contentType, contentSize } = request.data;
+
+      const signedUrl = await getSecureUrl("admin", contentType, contentSize);
+      res.json(signedUrl);
+    } catch (error) {
+      console.error("Error handling signed URL request:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
 //add content to the section
 
 adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
@@ -320,75 +389,6 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
       .json({ message: "Internal server error: Course creation failed" });
   }
 });
-
-//get signed url to upload content of the course section to s3
-adminCourseRouter.post(
-  "/:id/section/:sectionId/content/signed-url",
-  async (req, res) => {
-    if (!req.userId) {
-      res.status(401).json({ message: "Unauthorized: User not found" });
-      return;
-    }
-
-    const { id, sectionId } = req.params;
-
-    try {
-      // Validate that the section belongs to the course
-      const section = await client.section.findFirst({
-        where: {
-          id: sectionId,
-          courseId: id,
-        },
-      });
-
-      if (!section) {
-        res.status(404).json({
-          message: "Section not found or does not belong to the course.",
-        });
-        return;
-      }
-
-      // Validate course ownership
-      const course = await client.course.findUnique({
-        where: {
-          id,
-        },
-      });
-
-      if (!course) {
-        res.status(404).json({
-          message: "Course not found.",
-        });
-        return;
-      }
-
-      if (course.creatorId !== req.userId) {
-        res
-          .status(403)
-          .json({ message: "Forbidden: You don't own this course." });
-        return;
-      }
-
-      // Validate request body
-      const request = getCourseSectionContentUrlSchema.safeParse(req.body);
-      console.log("signed-course-section-content-body:", req.body);
-
-      if (!request.success) {
-        res.status(400).json({ message: "Invalid request body" });
-        return;
-      }
-
-      // Generate signed URL
-      const { contentType, contentSize } = request.data;
-
-      const signedUrl = await getSecureUrl("admin", contentType, contentSize);
-      res.json(signedUrl);
-    } catch (error) {
-      console.error("Error handling signed URL request:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }
-);
 
 //add content to the sections of the course
 

@@ -5,6 +5,8 @@ import {
   getCourseThumbnailUrlSchemaType,
   createCourseSchemaType,
   createSectionType,
+  getSectionContentUrlType,
+  addCourseSectionContentSchemaType,
 } from "../types";
 import { queryClient } from "../main";
 
@@ -147,3 +149,31 @@ export const getAllCourses = async ({ pageParam }: { pageParam: number }) => {
     return [];
   }
 };
+
+//get signed url to upload content of the course section to s3
+export const getSignedContentUrl = async (
+  data: getSectionContentUrlType,
+  courseId: string,
+  sectionId: string
+) => {
+  return axiosInstance.post(
+    `/course/${courseId}/section/${sectionId}/content/signed-url`,
+    data
+  );
+};
+
+//add the content to the section of the course
+export const addContentToSection = async (
+  data: addCourseSectionContentSchemaType,
+  courseId: string
+) => {
+  return axiosInstance.post(
+    `/course/${courseId}/section/${data.sectionId}/content`,
+    data
+  );
+};
+
+// addContentToSection(
+//   { title: "", description: "", contentUrl: "", sectionId: "" },
+//   ""
+// );
