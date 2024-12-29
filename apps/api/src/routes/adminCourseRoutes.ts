@@ -4,6 +4,8 @@ import {
   getCourseThumbnailUrlSchema,
   courseSchema,
   sectionSchema,
+  getCourseSectionContentUrlSchema,
+  addCourseSectionContentSchema,
 } from "@repo/zod-schemas/types";
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
@@ -147,13 +149,7 @@ adminCourseRouter.post("/signed-thumbnail-url", async (req, res) => {
   }
   try {
     const { thumbnailType, thumbnailSize } = request.data;
-    const signedUrl = await getSecureUrl(
-      "admin",
-      req.userId,
-      "thumbnail",
-      thumbnailType,
-      thumbnailSize
-    );
+    const signedUrl = await getSecureUrl("admin", thumbnailType, thumbnailSize);
     res.json(signedUrl);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -237,18 +233,151 @@ adminCourseRouter.post("/:id/section", async (req, res) => {
   }
 });
 
+adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
+  if (!req.userId) {
+    res.status(401).json({ message: "Unauthorized: User not found" });
+    return;
+  }
+  const response = addCourseSectionContentSchema.safeParse(req.body);
+  if (!response.success) {
+    res.status(400).json({ message: "Invalid request body" });
+    return;
+  }
+  try {
+    const { title, description, sectionId, contentUrl } = response.data;
+
+    //veryfy if the section exists
+    const section = await client.section.findUnique({
+      where: {
+        id: sectionId,
+      },
+    });
+    if (!section) {
+    }
+
+    // Create the course with the provided temp url for the thumbnail
+    const course = await client.course.create({
+      data: {
+        title,
+        description,
+        price,
+        thumbnailUrl,
+        creatorId: req.userId,
+      },
+    });
+
+    // Now, move the thumbnail to the correct path
+    try {
+      // Move the thumbnail to the new path (course/userid/courseid/thumbnail)
+      const destination = `course/admin/${req.userId}/${course.id}/thumbnail/${uuid()}`;
+      await moveFile(thumbnailUrl, destination);
+
+      // If the move is successful, update the course with the new thumbnail URL
+      const updatedCourse = await client.course.update({
+        where: { id: course.id },
+        data: { thumbnailUrl: destination },
+      });
+
+      res.json(updatedCourse);
+    } catch (error) {
+      console.log("Error moving file:", error);
+
+      // Delete the course if the file move fails to prevent storing the wrong data.
+      await client.course.delete({
+        where: { id: course.id },
+      });
+
+      res
+        .status(500)
+        .json({ message: "Internal server error: File move failed" });
+    }
+  } catch (error: any) {
+    console.log("Error creating course:", error);
+    if (error.code === "P2002") {
+      // Prisma unique constraint error code
+      res.status(409).json({ message: "Course already exists" });
+      return;
+    }
+    res
+      .status(500)
+      .json({ message: "Internal server error: Course creation failed" });
+  }
+});
+
+//get signed url to upload content of the course section to s3
+adminCourseRouter.post(
+  "/:id/section/:sectionId/content/signed-url",
+  async (req, res) => {
+    if (!req.userId) {
+      res.status(401).json({ message: "Unauthorized: User not found" });
+      return;
+    }
+    // check if the section is in the course
+    const { id, sectionId } = req.params;
+    const section = await client.section.findFirst({
+      where: {
+        id: sectionId,
+        courseId: id,
+      },
+    });
+    if (!section) {
+      res.status(404).json({
+        message: "Section not found or does not belong to the course",
+      });
+      return;
+    }
+
+    if (section.courseId !== id) {
+      res
+        .status(401)
+        .json({
+          message: "Unauthorized: invalid section amd course combination.",
+        });
+      return;
+    }
+    //verify if user ownd the course
+    const course = await client.course.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!course) {
+      res.status(404).json({
+        message:
+          "Course You are trying to upload your content to does not exist.",
+      });
+      return;
+    }
+    if (course.creatorId !== req.userId) {
+      res
+        .status(401)
+        .json({ message: "Unauthorized: You dont own this course." });
+      return;
+    }
+    const request = getCourseSectionContentUrlSchema.safeParse(req.body);
+    console.log("signed-course-section-content-body :", req.body);
+    if (!request.success) {
+      res.status(400).json({ message: "Invalid request body" });
+      return;
+    }
+    try {
+      const { contentType, contentSize } = request.data;
+      const signedUrl = await getSecureUrl("admin", contentType, contentSize);
+      res.json(signedUrl);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+//add content to the sections of the course
+
 adminCourseRouter.put("/:id/section/:sectionId", async (req, res) => {
   res.send("Admin Update Section of Course route");
 });
 
 adminCourseRouter.delete("/:id/section/:sectionId", async (req, res) => {
   res.send("Admin Delete Section of Course route");
-});
-
-//add content to the sections of the course
-
-adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
-  res.send("Admin Add Content to Section of Course route");
 });
 
 adminCourseRouter.put(

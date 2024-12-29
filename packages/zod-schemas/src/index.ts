@@ -46,3 +46,18 @@ export const sectionSchema = zod.object({
   title: zod.string().trim().min(3),
   courseId: zod.string().trim(),
 });
+
+export const getCourseSectionContentUrlSchema = zod.object({
+  contentType: zod.string().includes("video"),
+  contentSize: zod
+    .number()
+    .gte(0)
+    .lte(100 * 1024 * 1024),
+});
+
+export const addCourseSectionContentSchema = zod.object({
+  title: zod.string().trim().min(3),
+  contentUrl: zod.string().trim().url(),
+  description: zod.string().trim().min(10),
+  sectionId: zod.string().trim(),
+});

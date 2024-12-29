@@ -23,8 +23,7 @@ const s3 = new S3({
 
 export const getSecureUrl = async (
   userType: string,
-  userId: string,
-  type: string,
+
   ContentType: string,
   maxSize = 2 * 1024 * 1024 // 2 MB
 ) => {

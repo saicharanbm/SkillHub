@@ -53,7 +53,6 @@ model Section{
   courseId     String
   course       Course       @relation(fields: [courseId],references: [id])
   contents     Content[] 
-  order        Int          @default(0)
   created_at   DateTime     @default(now())
   updated_at   DateTime     @updatedAt
   @@unique([title,courseId])
@@ -66,9 +65,9 @@ model Content{
   description  String?
   sectionId    String
   section      Section      @relation(fields: [sectionId],references: [id])
-  order        Int          @default(0)
   created_at   DateTime     @default(now())
   updated_at   DateTime     @updatedAt
+  @@unique([title,sectionId])
 }
 
 model UserCourses{
