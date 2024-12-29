@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { signupSchemaType, loginSchemaType } from "../types";
+import { signupSchemaType, loginSchemaType, createSectionType } from "../types";
 import {
   axiosInstance,
   userLogin,
@@ -7,6 +7,7 @@ import {
   getSignedCourseThumbnailUrl,
   uploadToS3,
   createCourse,
+  createSection,
 } from "./api";
 import axios from "axios";
 import { queryClient } from "../main";
@@ -85,6 +86,23 @@ export const useCreateCourseMutation = () => {
         if (axios.isAxiosError(error) && error.response) {
           // Throw the server's error message
           throw error.response.data?.message || "An unknown error occurred";
+        }
+        // For non-Axios errors
+        throw "An unexpected error occurred";
+      }
+    },
+  });
+};
+export const useCreateCourseSectionMutation = () => {
+  return useMutation({
+    mutationFn: async (data: createSectionType) => {
+      try {
+        const response = await createSection(data);
+        return response.data.message;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // Throw the server's error message
+          throw error.response.data.message || "An unknown error occurred";
         }
         // For non-Axios errors
         throw "An unexpected error occurred";

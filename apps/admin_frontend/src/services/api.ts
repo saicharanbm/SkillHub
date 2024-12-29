@@ -4,6 +4,7 @@ import {
   signupSchemaType,
   getCourseThumbnailUrlSchemaType,
   createCourseSchemaType,
+  createSectionType,
 } from "../types";
 import { queryClient } from "../main";
 
@@ -87,6 +88,12 @@ export const getSignedCourseThumbnailUrl = (
 };
 export const getCourse = async (id: string) => {
   return axiosInstance.get(`/course/${id}`);
+};
+
+//Create new section to a course
+
+export const createSection = async (data: createSectionType) => {
+  return axiosInstance.post(`/course/${data.courseId}/section`, data);
 };
 
 interface S3Response {
