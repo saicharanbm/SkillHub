@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import CourseHeader from "./CourseHeader";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../shimmer/Spinner";
 function CoursePage() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -13,7 +14,11 @@ function CoursePage() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: course } = useGetCourseQuery(id as string);
+  const { data: course, isLoading } = useGetCourseQuery(id as string);
+
+  if (isLoading) {
+    return <Spinner text={"Loading course Content ..."} />;
+  }
 
   // 1) header with title, description and price
   return (
@@ -65,9 +70,23 @@ function CoursePage() {
                     <span>Add Content</span>
                   </button>
                 </div>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  This is the dropdown content. You can add anything here!
-                </p>
+                <div className="conten-container w-full flex flex-col gap-4">
+                  <div className="content w-full p-4 grid grid-cols-[30%,70%]  gap-4   border-dashed border-2 border-gray-700 rounded-md">
+                    <img
+                      src={`https://transcoded-videos.saicharanbm.in/${course.thumbnailUrl}`}
+                      alt=""
+                      className=" h-24 sm:h-32 md:h-40 "
+                    />
+                    <div className="w-full h-full flex flex-col gap-3 break-words leading-3">
+                      <h1 className="text-gray-200 text-lg md:text-xl xl:text-2xl leading-relaxed line-clamp-2">
+                        This is the dropdown content. You can add anything here!
+                      </h1>
+                      <p className="text-gray-400 text-sm  leading-relaxed line-clamp-2">
+                        This is the dropdown content. You can add anything here!
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

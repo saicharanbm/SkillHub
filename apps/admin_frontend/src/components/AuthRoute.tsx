@@ -13,11 +13,7 @@ const AuthRoute = ({
   const { userData, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="h-[calc(100vh-8rem)] w-full  flex justify-center items-center ">
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (isProtected && !userData) {
