@@ -12,18 +12,18 @@ function CreateSection() {
     handleSubmit,
     formState: { errors },
   } = useForm<createSectionType>({ mode: "onChange" });
-  const { id } = useParams();
+  const { courseId } = useParams();
   const navigate = useNavigate();
   const createSection: SubmitHandler<createSectionType> = (data) => {
     console.log(data);
-    data = { ...data, courseId: id as string };
+    data = { ...data, courseId: courseId as string };
     toast.promise(
       new Promise<string>((resolve, reject) => {
         createNewSection(data, {
           onSuccess: (data) => {
             console.log("Section created successfully");
             console.log(data);
-            navigate(`/course/${id}`);
+            navigate(`/course/${courseId}`);
             resolve(data);
           },
           onError: (error) => {
@@ -58,7 +58,7 @@ function CreateSection() {
         <IoMdArrowRoundBack
           size={30}
           className="cursor-pointer"
-          onClick={() => navigate(`/course/${id}`)}
+          onClick={() => navigate(`/course/${courseId}`)}
         />
         <h1 className="text-2xl font-bold text-white text-center sm:text-4xl">
           Create Section
@@ -99,7 +99,7 @@ function CreateSection() {
           <input
             type="text"
             id="courseId"
-            value={id}
+            value={courseId}
             disabled
             placeholder="Enter course id"
             className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"

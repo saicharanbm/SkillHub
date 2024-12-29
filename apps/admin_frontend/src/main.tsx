@@ -64,7 +64,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/course/:id",
+        path: "/course/:courseId",
         element: (
           <AuthRoute isProtected={true}>
             <CoursePage />
@@ -72,7 +72,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/course/:id/create-section",
+        path: "/course/:courseId/create-section",
         element: (
           <AuthRoute isProtected={true}>
             <CreateSection />
