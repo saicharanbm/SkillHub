@@ -2,7 +2,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { createSectionType } from "../../../types";
 import { useParams, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useCreateCourseSectionMutation } from "../../../services/mutations";
+import { toast } from "react-toastify";
 function CreateSection() {
+  const { mutate: createNewSection, isPending } =
+    useCreateCourseSectionMutation();
   const {
     register,
     handleSubmit,
@@ -12,6 +16,38 @@ function CreateSection() {
   const navigate = useNavigate();
   const createSection: SubmitHandler<createSectionType> = (data) => {
     console.log(data);
+    data = { ...data, courseId: id as string };
+    toast.promise(
+      new Promise<string>((resolve, reject) => {
+        createNewSection(data, {
+          onSuccess: (data) => {
+            console.log("Section created successfully");
+            console.log(data);
+            navigate(`/course/${id}`);
+            resolve(data);
+          },
+          onError: (error) => {
+            console.log(error);
+            reject(error);
+          },
+        });
+      }),
+      {
+        pending: "Creating section...",
+        success: {
+          render({ data }: { data: string }) {
+            console.log(data);
+            return (data as string) || "Section created successfully!";
+          },
+        },
+        error: {
+          render({ data }: { data: string }) {
+            console.log(data);
+            return (data as string) || "Section creation failed!";
+          },
+        },
+      }
+    );
   };
   return (
     <div className="w-full min-h-[calc(100vh-4rem)] text-white flex justify-center items-center py-4 px-4 lg:px-24">
@@ -72,12 +108,11 @@ function CreateSection() {
 
         <div className="submit-container mt-4 flex justify-center">
           <button
-            // disabled={isPending}
+            disabled={isPending}
             type="submit"
             className="bg-[#F89A28] text-black text-lg font-semibold rounded-lg py-3 px-6 hover:opacity-70 focus:outline-none"
           >
-            {/* {isPending ? "Creating..." : "Create Course"} */}
-            Create Section
+            {isPending ? "Creating..." : "Create Section"}
           </button>
         </div>
       </form>

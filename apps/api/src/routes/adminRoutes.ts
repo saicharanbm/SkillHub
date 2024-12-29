@@ -142,6 +142,12 @@ adminRouter.post("/get-token", async (req, res) => {
     res.json({ token: accessToken, message: "token successfully generated" });
   } catch (error: any) {
     console.log("get-token error: ", error);
+    if (error.code === "P2024") {
+      res
+        .status(500)
+        .json({ message: "Internal Server Error: User not found" });
+      return;
+    }
     res.cookie("refreshToken", "", { httpOnly: true, expires: new Date(0) });
 
     if (error.name === "TokenExpiredError") {

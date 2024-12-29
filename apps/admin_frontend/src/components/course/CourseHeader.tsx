@@ -10,7 +10,7 @@ function CourseHeader({
   price: number;
 }) {
   return (
-    <div className="relative w-full h-[35vh] bg-slate-900 overflow-hidden">
+    <div className="relative w-full min-h-52 md:min-h-60 h-[35vh] bg-slate-900 overflow-hidden">
       {/* Background Image with Gradient Overlay */}
       <img
         className="absolute inset-0 w-full h-full object-cover opacity-60"
@@ -34,7 +34,7 @@ function CourseHeader({
             </div>
 
             {/* Description */}
-            <p className="text-lg sm:text-xl text-slate-300 line-clamp-3 font-medium line-clamp-2">
+            <p className="text-lg sm:text-xl text-slate-300 font-medium line-clamp-2">
               {description}
             </p>
 
