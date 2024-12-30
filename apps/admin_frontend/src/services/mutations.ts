@@ -131,7 +131,7 @@ export const useUploadContentMutation = () => {
         const { size: thumbnailSize, type: thumbnailType } = data.thumbnail;
 
         const response = await getSignedContentUrl(
-          { contentType, contentSize, thumbnailType, thumbnailSize },
+          { title, contentType, contentSize, thumbnailType, thumbnailSize },
           courseId,
           sectionId
         );

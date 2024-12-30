@@ -32,12 +32,12 @@ function UploadSectionContent() {
       thumbnail: data.thumbnail[0],
     };
     toast.promise(
-      new Promise<string>((resolve, reject) => {
+      new Promise((resolve, reject) => {
         uploadNewContent(requestData, {
           onSuccess: (data) => {
             console.log("Section created successfully");
             console.log(data);
-            resolve(data);
+            resolve("Content Uploaded Successfully");
           },
           onError: (error) => {
             console.log(error);
@@ -46,17 +46,12 @@ function UploadSectionContent() {
         });
       }),
       {
-        pending: "Creating section...",
-        success: {
-          render({ data }: { data: string }) {
-            console.log(data);
-            return (data as string) || "Section created successfully!";
-          },
-        },
+        pending: "Uploading Content...",
+        success: "Content Uploaded Successfully",
         error: {
           render({ data }: { data: string }) {
             console.log(data);
-            return (data as string) || "Section creation failed!";
+            return (data as string) || "Content Upload failed!";
           },
         },
       }

@@ -282,6 +282,20 @@ adminCourseRouter.post(
         res.status(400).json({ message: "Invalid request body" });
         return;
       }
+      //verify if the content with the same name already exists in the course section
+      const existingContent = await client.content.findFirst({
+        where: {
+          title: request.data.title,
+          sectionId: sectionId,
+        },
+      });
+
+      if (existingContent) {
+        res
+          .status(409)
+          .json({ message: "Content with the same name already exists" });
+        return;
+      }
 
       // Generate signed URL for the video and thumbnail
       const { contentType, contentSize, thumbnailSize, thumbnailType } =

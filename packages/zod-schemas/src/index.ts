@@ -48,6 +48,7 @@ export const sectionSchema = zod.object({
 });
 
 export const getCourseSectionContentUrlSchema = zod.object({
+  title: zod.string().trim().min(3),
   contentType: zod.string().includes("video"),
   contentSize: zod
     .number()
