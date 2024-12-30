@@ -15,6 +15,7 @@ import Account from "./components/Account.tsx";
 import CoursePage from "./components/course/CoursePage.tsx";
 import CreateSection from "./components/course/section/CreateSection.tsx";
 import Analytics from "./components/Analytics.tsx";
+import UploadContent from "./components/course/section/UpploadSectionContent.tsx";
 
 export const queryClient = new QueryClient();
 
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
         element: (
           <AuthRoute isProtected={true}>
             <CreateSection />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/course/:courseId/edit-section/:sectionId/upload-content",
+        element: (
+          <AuthRoute isProtected={true}>
+            <UploadContent />
           </AuthRoute>
         ),
       },

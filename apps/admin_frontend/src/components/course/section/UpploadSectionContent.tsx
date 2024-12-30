@@ -1,31 +1,37 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { useCreateCourseSectionMutation } from "../../../services/mutations";
+import { useUploadContentMutation } from "../../../services/mutations";
 import { toast } from "react-toastify";
 
 interface contentUploadType {
   title: string;
   description: string;
   sectionId: string;
-  thumbnail: FileList;
+  content: FileList;
 }
-function UploadContent() {
-  const { mutate: createNewSection, isPending } =
-    useCreateCourseSectionMutation();
+function UploadSectionContent() {
+  const { mutate: uploadNewContent, isPending } = useUploadContentMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<contentUploadType>({ mode: "onChange" });
-  const { courseId } = useParams();
+  const { courseId, sectionId } = useParams();
   const navigate = useNavigate();
   const UploadContent: SubmitHandler<contentUploadType> = (data) => {
     console.log(data);
-    data = { ...data, courseId: courseId as string };
+    data = { ...data, sectionId: sectionId as string };
+    const requestData = {
+      title: data.title,
+      description: data.description,
+      courseId: courseId as string,
+      sectionId: sectionId as string,
+      content: data.content[0],
+    };
     toast.promise(
       new Promise<string>((resolve, reject) => {
-        createNewSection(data, {
+        uploadNewContent(requestData, {
           onSuccess: (data) => {
             console.log("Section created successfully");
             console.log(data);
@@ -94,22 +100,80 @@ function UploadContent() {
             <p className="text-red-500">{errors.title.message}</p>
           )}
         </div>
-
-        <div className="course-id-container">
+        <div className="description-container">
           <label
-            htmlFor="courseId"
+            htmlFor="description"
             className="block text-sm font-semibold text-gray-300 mb-1 "
           >
-            Course Id
+            Description
+          </label>
+          <textarea
+            id="description"
+            {...register("description", {
+              required: "Description is required",
+              minLength: {
+                value: 10,
+                message: "Description must be at least 10 characters long",
+              },
+            })}
+            rows={6}
+            placeholder="Enter course description"
+            className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+          />
+          {errors.description && (
+            <p className="text-red-500">{errors.description.message}</p>
+          )}
+        </div>
+
+        <div className="section-id-container">
+          <label
+            htmlFor="sectionId"
+            className="block text-sm font-semibold text-gray-300 mb-1 "
+          >
+            Section Id
           </label>
           <input
             type="text"
-            id="courseId"
-            value={courseId}
+            id="sectionId"
+            value={sectionId}
             disabled
-            placeholder="Enter course id"
+            placeholder="Enter section id"
             className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
+        </div>
+        <div className="content-container">
+          <label
+            htmlFor="content"
+            className="block text-sm font-semibold text-gray-300 mb-1 "
+          >
+            Content
+          </label>
+          <input
+            type="file"
+            id="content"
+            {...register("content", {
+              required: "content is required",
+              validate: {
+                fileSize: (files) =>
+                  files?.[0]?.size <= 100 * 1024 * 1024 ||
+                  "content size should be less than 100MB",
+                fileType: (files) =>
+                  [
+                    "video/mp4",
+                    "video/mpeg",
+                    "video/webm",
+                    "video/ogg",
+                    "video/avi",
+                  ].includes(files?.[0]?.type) ||
+                  "Only MP4, WebM, and OGG videos are allowed",
+              },
+            })}
+            placeholder="Please add an content"
+            className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+          {errors.content && (
+            <p className="text-red-500">{errors.content.message as string}</p>
+          )}
         </div>
 
         <div className="submit-container mt-4 flex justify-center">
@@ -126,4 +190,4 @@ function UploadContent() {
   );
 }
 
-export default UploadContent;
+export default UploadSectionContent;
