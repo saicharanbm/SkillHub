@@ -102,7 +102,10 @@ adminCourseRouter.post("/", async (req, res) => {
         data: { thumbnailUrl: destination },
       });
 
-      res.json(updatedCourse);
+      res.json({
+        message: "Course created successfully",
+        courseId: updatedCourse.id,
+      });
     } catch (error) {
       console.log("Error moving file:", error);
 
@@ -334,6 +337,7 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
 
     //validate request body
     const request = addCourseSectionContentSchema.safeParse(req.body);
+    console.log("add-course-section-content-body:", req.body);
     if (!request.success) {
       res.status(400).json({ message: "Invalid request body" });
       return;

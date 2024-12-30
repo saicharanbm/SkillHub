@@ -57,7 +57,7 @@ export const getCourseSectionContentUrlSchema = zod.object({
 
 export const addCourseSectionContentSchema = zod.object({
   title: zod.string().trim().min(3),
-  contentUrl: zod.string().trim().url(),
+  contentUrl: zod.string().trim(), //wont be using the .url() because we are just storing the path
   description: zod.string().trim().min(10),
   sectionId: zod.string().trim(),
 });

@@ -1,5 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useCreateCourseMutation } from "../../services/mutations";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 interface courseFormData {
   title: string;
   description: string;
@@ -7,6 +9,7 @@ interface courseFormData {
   thumbnail: FileList;
 }
 function CreateCourse() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -18,25 +21,59 @@ function CreateCourse() {
     console.log("Uploaded data:", data);
     if (data.thumbnail.length > 0) {
       console.log("Uploaded thumbnail:", data.thumbnail[0]);
-
-      createCourse(
+      toast.promise(
+        new Promise<void>((resolve, reject) => {
+          createCourse(
+            {
+              title: data.title,
+              description: data.description,
+              price: data.price * 100,
+              thumbnail: data.thumbnail[0],
+            },
+            {
+              onSuccess: (data) => {
+                console.log("Create course successful");
+                console.log(data);
+                navigate(`/course/${data.courseId}`);
+                resolve();
+              },
+              onError: (error) => {
+                console.log("Create course failed");
+                console.log(error);
+                reject(error);
+              },
+            }
+          );
+        }),
         {
-          title: data.title,
-          description: data.description,
-          price: data.price * 100,
-          thumbnail: data.thumbnail[0],
-        },
-        {
-          onSuccess: (data) => {
-            console.log("Create course successful");
-            console.log(data);
-          },
-          onError: (error) => {
-            console.log("Create course failed");
-            console.log(error);
+          pending: "Creating course...",
+          success: "Course created successfully",
+          error: {
+            render({ data }: { data: string }) {
+              console.log(data);
+              return data;
+            },
           },
         }
       );
+      // createCourse(
+      //   {
+      //     title: data.title,
+      //     description: data.description,
+      //     price: data.price * 100,
+      //     thumbnail: data.thumbnail[0],
+      //   },
+      //   {
+      //     onSuccess: (data) => {
+      //       console.log("Create course successful");
+      //       console.log(data);
+      //     },
+      //     onError: (error) => {
+      //       console.log("Create course failed");
+      //       console.log(error);
+      //     },
+      //   }
+      // );
     }
   };
   return (
@@ -110,7 +147,9 @@ function CreateCourse() {
             id="price"
             {...register("price", {
               required: "Price is required",
-              validate: (value) => value >= 10 || "Price must be at least 10",
+              validate: (value) =>
+                (value >= 10 && value <= 9000000) ||
+                "Price must be at least 10 and less than or equal to 9000000",
             })}
             placeholder="Enter course price"
             className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
@@ -137,9 +176,8 @@ function CreateCourse() {
                   files?.[0]?.size <= 5 * 1024 * 1024 ||
                   "thumbnail size should be less than 5MB",
                 fileType: (files) =>
-                  ["image/jpeg", "image/png", "image/gif"].includes(
-                    files?.[0]?.type
-                  ) || "Only JPEG, PNG, and GIF images are allowed",
+                  files?.[0]?.type.includes("image") ||
+                  "Only JPEG, PNG, and GIF images are allowed",
               },
             })}
             placeholder="Please add an thumbnail"

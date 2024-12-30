@@ -81,7 +81,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/course/:courseId/edit-section/:sectionId/upload-content",
+        path: "/course/:courseId/section/:sectionId/upload-content",
         element: (
           <AuthRoute isProtected={true}>
             <UploadContent />

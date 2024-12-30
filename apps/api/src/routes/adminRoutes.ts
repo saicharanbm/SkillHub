@@ -34,6 +34,7 @@ adminRouter.post("/signup", async (req, res) => {
     if (error.code === "P2002") {
       // Prisma unique constraint error code
       res.status(409).send({ message: "Email already exists" });
+      return;
     } else {
       res.status(500).send({ message: "Internal Server Error" });
     }

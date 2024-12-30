@@ -35,7 +35,6 @@ function UploadSectionContent() {
           onSuccess: (data) => {
             console.log("Section created successfully");
             console.log(data);
-            navigate(`/course/${courseId}`);
             resolve(data);
           },
           onError: (error) => {
@@ -165,7 +164,7 @@ function UploadSectionContent() {
                     "video/ogg",
                     "video/avi",
                   ].includes(files?.[0]?.type) ||
-                  "Only MP4, WebM, and OGG videos are allowed",
+                  "Only MP4, MPEG, AVI, WebM, and OGG videos are allowed",
               },
             })}
             placeholder="Please add an content"

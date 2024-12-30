@@ -25,7 +25,7 @@ function CoursePage() {
   return (
     <div className="w-full min-h-[calc(100vh-4rem)]  py-4 flex">
       {course && (
-        <div className="flex-1 bg-[#1C1C1E] pb-3 rounded-md overflow-hidden">
+        <div className="flex-1 bg-[#1C1C1E] pb-10 rounded-md overflow-hidden">
           <CourseHeader
             title={course.title}
             description={course.description}
@@ -43,7 +43,7 @@ function CoursePage() {
               Add Section
             </button>
           </div>
-          {course.sections ? (
+          {course.sections.length > 0 ? (
             course.sections.map(
               (section: { id: string; title: string; contents: [] }) => {
                 return (
@@ -57,8 +57,10 @@ function CoursePage() {
             )
           ) : (
             <div className="text-red-500 text-center">
-              <p>No sections found for this course</p>
-              <p>Please add sections</p>
+              <p className="text-lg md:text-2xl">
+                No sections found for this course
+              </p>
+              <p className="text-sm">Please add a section</p>
             </div>
           )}
           {/* {course} */}
