@@ -122,25 +122,30 @@ export const useUploadContentMutation = () => {
       courseId: string;
       sectionId: string;
       content: File;
+      thumbnail: File;
     }) => {
       try {
-        const { content, title, description, courseId, sectionId } = data;
+        const { content, title, description, courseId, sectionId, thumbnail } =
+          data;
         const { size: contentSize, type: contentType } = content;
+        const { size: thumbnailSize, type: thumbnailType } = data.thumbnail;
 
         const response = await getSignedContentUrl(
-          { contentType, contentSize },
+          { contentType, contentSize, thumbnailType, thumbnailSize },
           courseId,
           sectionId
         );
         console.log(response.data);
-        await uploadToS3(response.data, content);
+        await uploadToS3(response.data.contentSignedUrl, content);
+        await uploadToS3(response.data.thumbnailSignedUrl, thumbnail);
 
         const courseResponse = await addContentToSection(
           {
             title,
             description,
             sectionId,
-            contentUrl: response.data.destination,
+            contentUrl: response.data.contentSignedUrl.destination,
+            thumbnailUrl: response.data.thumbnailSignedUrl.destination,
           },
           courseId
         );

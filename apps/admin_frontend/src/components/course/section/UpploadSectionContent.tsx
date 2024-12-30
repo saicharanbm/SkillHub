@@ -9,6 +9,7 @@ interface contentUploadType {
   description: string;
   sectionId: string;
   content: FileList;
+  thumbnail: FileList;
 }
 function UploadSectionContent() {
   const { mutate: uploadNewContent, isPending } = useUploadContentMutation();
@@ -28,6 +29,7 @@ function UploadSectionContent() {
       courseId: courseId as string,
       sectionId: sectionId as string,
       content: data.content[0],
+      thumbnail: data.thumbnail[0],
     };
     toast.promise(
       new Promise<string>((resolve, reject) => {
@@ -145,7 +147,7 @@ function UploadSectionContent() {
             htmlFor="content"
             className="block text-sm font-semibold text-gray-300 mb-1 "
           >
-            Content
+            Video
           </label>
           <input
             type="file"
@@ -172,6 +174,34 @@ function UploadSectionContent() {
           />
           {errors.content && (
             <p className="text-red-500">{errors.content.message as string}</p>
+          )}
+        </div>
+        <div className="thumbnail-container">
+          <label
+            htmlFor="thumbnail"
+            className="block text-sm font-semibold text-gray-300 mb-1 "
+          >
+            Thumbnail
+          </label>
+          <input
+            type="file"
+            id="thumbnail"
+            {...register("thumbnail", {
+              required: "thumbnail is required",
+              validate: {
+                fileSize: (files) =>
+                  files?.[0]?.size <= 5 * 1024 * 1024 ||
+                  "thumbnail size should be less than 5MB",
+                fileType: (files) =>
+                  files?.[0]?.type.includes("image") ||
+                  "Only  images are allowed",
+              },
+            })}
+            placeholder="Please add an thumbnail"
+            className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+          {errors.thumbnail && (
+            <p className="text-red-500">{errors.thumbnail.message as string}</p>
           )}
         </div>
 

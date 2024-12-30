@@ -283,11 +283,22 @@ adminCourseRouter.post(
         return;
       }
 
-      // Generate signed URL
-      const { contentType, contentSize } = request.data;
+      // Generate signed URL for the video and thumbnail
+      const { contentType, contentSize, thumbnailSize, thumbnailType } =
+        request.data;
 
-      const signedUrl = await getSecureUrl("admin", contentType, contentSize);
-      res.json(signedUrl);
+      const contentSignedUrl = await getSecureUrl(
+        "admin",
+        contentType,
+        contentSize
+      );
+
+      const thumbnailSignedUrl = await getSecureUrl(
+        "admin",
+        thumbnailType,
+        thumbnailSize
+      );
+      res.json({ contentSignedUrl, thumbnailSignedUrl });
     } catch (error) {
       console.error("Error handling signed URL request:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -349,6 +360,7 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
         title: request.data.title,
         description: request.data.description,
         url: request.data.contentUrl,
+        thumbnailUrl: request.data.thumbnailUrl,
         sectionId: request.data.sectionId,
       },
     });
@@ -356,13 +368,17 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
     // Now, move the thumbnail to the correct path
     try {
       // Move the thumbnail to the new path (course/userid/courseid/thumbnail)
-      const destination = `course/admin/${req.userId}/${course.id}/${content.id}/${uuid()}`;
-      await moveFile(request.data.contentUrl, destination);
+      const videoDestination = `course/admin/${req.userId}/${course.id}/${content.id}/video/${uuid()}`;
+      await moveFile(request.data.contentUrl, videoDestination);
+
+      // Move the thumbnail to the new path (course/userid/courseid/thumbnail)
+      const thumbnailDestination = `course/admin/${req.userId}/${course.id}/${content.id}/thumbnail/${uuid()}`;
+      await moveFile(request.data.thumbnailUrl, thumbnailDestination);
 
       // If the move is successful, update the content with the new path
       const updatedContent = await client.content.update({
         where: { id: content.id },
-        data: { url: destination },
+        data: { url: videoDestination, thumbnailUrl: thumbnailDestination },
       });
 
       res.json({

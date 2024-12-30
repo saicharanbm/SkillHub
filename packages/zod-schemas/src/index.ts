@@ -53,11 +53,17 @@ export const getCourseSectionContentUrlSchema = zod.object({
     .number()
     .gte(0)
     .lte(100 * 1024 * 1024),
+  thumbnailType: zod.string().includes("image"),
+  thumbnailSize: zod
+    .number()
+    .gte(0)
+    .lte(5 * 1024 * 1024),
 });
 
 export const addCourseSectionContentSchema = zod.object({
   title: zod.string().trim().min(3),
   contentUrl: zod.string().trim(), //wont be using the .url() because we are just storing the path
+  thumbnailUrl: zod.string().trim(),
   description: zod.string().trim().min(10),
   sectionId: zod.string().trim(),
 });
