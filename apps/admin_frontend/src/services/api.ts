@@ -173,7 +173,6 @@ export const addContentToSection = async (
   );
 };
 
-// addContentToSection(
-//   { title: "", description: "", contentUrl: "", sectionId: "" },
-//   ""
-// );
+export const userLogout = async () => {
+  return axiosInstance.post("/signout");
+};

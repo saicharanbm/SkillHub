@@ -2,7 +2,31 @@ import { MdOutlineLogout } from "react-icons/md";
 import { IoMdCreate, IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useLogoutMutation } from "../../services/mutations";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 function UserModal({ fullName }: { fullName: string }) {
+  const navigate = useNavigate();
+  const { mutateAsync: logout } = useLogoutMutation();
+  const handleLogout = () => {
+    toast.promise(logout(), {
+      pending: "Logging out...",
+      success: {
+        render() {
+          navigate("/login");
+          return "Logout successful!";
+        },
+      },
+      error: {
+        render({ data }: { data: string }) {
+          console.log(data);
+          return (data as string) || "Logout failed!";
+        },
+      },
+    });
+  };
+
   return (
     <div className="absolute right-0 my-4 w-64 bg-[rgba(25,30,37,.95)] rounded-md shadow-lg text-white">
       <div className="px-4 py-2 border-b border-gray-600 text-sm">
@@ -44,7 +68,10 @@ function UserModal({ fullName }: { fullName: string }) {
       </div>
 
       <div className="px-4 py-2 border-t border-gray-600">
-        <button className="flex space-x-2 items-center hover:text-[#F89A28] cursor-pointer">
+        <button
+          onClick={handleLogout}
+          className="flex space-x-2 items-center hover:text-[#F89A28] cursor-pointer"
+        >
           <MdOutlineLogout /> <p>Sign out</p>
         </button>
       </div>

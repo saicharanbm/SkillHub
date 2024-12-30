@@ -10,6 +10,7 @@ import {
   createSection,
   getSignedContentUrl,
   addContentToSection,
+  userLogout,
 } from "./api";
 import axios from "axios";
 import { queryClient } from "../main";
@@ -162,4 +163,26 @@ export const useUploadContentMutation = () => {
   });
 };
 
-export const useLogoutMutation = () => {};
+export const useLogoutMutation = () => {
+  return useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await userLogout();
+        return response.data.message;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // Throw the server's error message
+          throw error.response.data?.message || "An unknown error occurred";
+        }
+        // For non-Axios errors
+        throw "An unexpected error occurred";
+      }
+    },
+    onSuccess: () => {
+      //clear the query cache
+      queryClient.clear();
+      //clear the axios instance auth headers
+      axiosInstance.defaults.headers.authorization = "";
+    },
+  });
+};
