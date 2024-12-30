@@ -6,9 +6,21 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer, Bounce } from "react-toastify";
 import "./index.css";
 import App from "./App.tsx";
+import Home from "./components/Home.tsx";
 
 export const queryClient = new QueryClient();
-const router = createBrowserRouter([]);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+    ],
+  },
+]);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

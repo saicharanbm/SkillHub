@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import client from "@repo/db/client";
 
-export const verifyUser = async (
+export const verifyUserMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction

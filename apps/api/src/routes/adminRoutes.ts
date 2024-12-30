@@ -163,21 +163,25 @@ adminRouter.post("/get-token", async (req, res) => {
 adminRouter.get("/user", verifyAdminMiddleware, async (req, res) => {
   console.log(req.userId);
   console.log("hello");
-  const user = await client.admin.findUnique({
-    where: {
-      id: req.userId,
-    },
-    select: {
-      email: true,
-      fullName: true,
-      avatarUrl: true,
-    },
-  });
-  if (!user) {
-    res.status(404).json({ message: "User not found" });
-    return;
+  try {
+    const user = await client.admin.findUnique({
+      where: {
+        id: req.userId,
+      },
+      select: {
+        email: true,
+        fullName: true,
+        avatarUrl: true,
+      },
+    });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
   }
-  res.json(user);
 });
 
 adminRouter.post("/signout", async (req, res) => {

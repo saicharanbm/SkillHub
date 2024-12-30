@@ -1,6 +1,6 @@
 export const ROUTES = {
   public: ["/login", "/signup"],
-  protected: ["/course", "/analytics", "/account-setting"],
+  protected: ["/course", "/purchases", "/account-setting"],
   home: "/",
   fallback: "/login",
 };

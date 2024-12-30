@@ -6,6 +6,7 @@ import client from "@repo/db/client";
 import { generateToken } from "../utils";
 import { TokenType } from "../types";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { verifyUserMiddleware } from "../middlewares/verifyUserMiddleware";
 export const userRouter = Router();
 
 userRouter.post("/signup", async (req, res) => {
@@ -142,6 +143,13 @@ userRouter.post("/get-token", async (req, res) => {
       token: accessToken,
     });
   } catch (error: any) {
+    console.log("get-token error: ", error);
+    if (error.code === "P2024") {
+      res
+        .status(500)
+        .json({ message: "Internal Server Error: User not found" });
+      return;
+    }
     res.cookie("refreshToken", "", { httpOnly: true, expires: new Date(0) });
 
     if (error.name === "TokenExpiredError") {
@@ -154,12 +162,62 @@ userRouter.post("/get-token", async (req, res) => {
   }
 });
 
+userRouter.get("/user", verifyUserMiddleware, async (req, res) => {
+  const userId = req.userId;
+  try {
+    const user = await client.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        email: true,
+        fullName: true,
+        avatarUrl: true,
+      },
+    });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 userRouter.post("/signout", async (req, res) => {
   res.cookie("refreshToken", "", { httpOnly: true, expires: new Date(0) });
   res.json({ message: "Logout successful" });
 });
-userRouter.get("/purchases", async (req, res) => {
+userRouter.get("/purchases", verifyUserMiddleware, async (req, res) => {
   res.send("User Purchases route");
+  const userId = req.userId;
+
+  try {
+    const purchases = await client.userCourses.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        course: {
+          select: {
+            title: true,
+            description: true,
+            thumbnailUrl: true,
+            creator: {
+              select: {
+                fullName: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    res.json(purchases);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 userRouter.use("/course", userCourseRouter);
