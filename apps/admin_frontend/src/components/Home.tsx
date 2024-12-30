@@ -60,7 +60,7 @@ const Home = () => {
           )}
       </div>
       {!isLoading && !hasNextPage && (
-        <div className="text-center text-lg text-white pt-3">
+        <div className="text-center text-lg text-red-500 pt-5">
           No more courses to load
         </div>
       )}
