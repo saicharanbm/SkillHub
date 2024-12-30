@@ -37,6 +37,7 @@ function UploadSectionContent() {
           onSuccess: (data) => {
             console.log("Section created successfully");
             console.log(data);
+            navigate(`/course/${courseId}`);
             resolve("Content Uploaded Successfully");
           },
           onError: (error) => {

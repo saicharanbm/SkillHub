@@ -4,10 +4,12 @@ function SectionDropDown({
   id,
   thumbnailUrl,
   title,
+  contents,
 }: {
   id: string;
   thumbnailUrl: string;
   title: string;
+  contents: [];
 }) {
   const { courseId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -48,23 +50,37 @@ function SectionDropDown({
               <span>Add Content</span>
             </button>
           </div>
-          <div className="conten-container w-full flex flex-col gap-4">
-            <div className="content w-full p-4 grid grid-cols-[30%,70%]  gap-4   border-dashed border-2 border-gray-700 rounded-md">
-              <img
-                src={`https://transcoded-videos.saicharanbm.in/${thumbnailUrl}`}
-                alt=""
-                className=" h-24 sm:h-32 md:h-40 rounded-md"
-              />
-              <div className="w-full h-full flex flex-col gap-3 break-words leading-3">
-                <h1 className="text-gray-200 text-lg md:text-xl xl:text-2xl leading-relaxed line-clamp-2">
-                  This is the dropdown content. You can add anything here!
-                </h1>
-                <p className="text-gray-400 text-sm  leading-relaxed line-clamp-2">
-                  This is the dropdown content. You can add anything here!
-                </p>
-              </div>
+          {contents.length > 0 ? (
+            <div className="conten-container w-full flex flex-col gap-4">
+              {contents.map((content: any) => (
+                <div
+                  key={content.id}
+                  className="content w-full p-4 grid grid-cols-[30%,70%]  gap-4   border-dashed border-2 border-gray-700 rounded-md"
+                >
+                  <img
+                    src={`https://transcoded-videos.saicharanbm.in/${content.thumbnailUrl}`}
+                    alt=""
+                    className=" h-24 sm:h-32 md:h-40 rounded-md"
+                  />
+                  <div className="w-full h-full flex flex-col gap-3 break-words leading-3">
+                    <h1 className="text-gray-200 text-lg md:text-xl xl:text-2xl leading-relaxed line-clamp-2">
+                      {content.title}
+                    </h1>
+                    <p className="text-gray-400 text-sm  leading-relaxed line-clamp-2">
+                      {content.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="text-red-500 text-center border-dashed border-2 border-gray-700 rounded-md p-4">
+              <p className="text-lg md:text-2xl">
+                No Contents found for this Section
+              </p>
+              <p className="text-sm">Please add some contents</p>
+            </div>
+          )}
         </div>
       )}
     </div>

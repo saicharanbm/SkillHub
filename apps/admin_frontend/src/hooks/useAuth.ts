@@ -12,10 +12,12 @@ const useAuth = () => {
     if (isLoading) return;
     const { pathname } = location;
     if (!userData) {
+      //if the user is not logged in and trying to access a protected route redirect him to the login page
       if (ROUTES.protected.includes(pathname)) {
         navigate(ROUTES.fallback);
       }
     } else {
+      //if the user is logged in and trying to access a public(signup or signin page) route redirect him to the home page
       if (ROUTES.public.includes(pathname)) {
         navigate(ROUTES.home);
       }
