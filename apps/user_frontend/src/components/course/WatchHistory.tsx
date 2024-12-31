@@ -2,7 +2,9 @@ function WatchHistory() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-[#F89A28] mb-4">Skill Hub</h1>
+        <h1 className="text-4xl font-bold text-[#F89A28] mb-4">
+          Watch History
+        </h1>
         <p className="text-lg text-gray-400 mb-8">
           We're working hard to bring you something amazing!
         </p>

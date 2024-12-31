@@ -37,12 +37,12 @@ function CoursePage() {
           <div className="p-4 w-full flex justify-end ">
             <button
               onClick={() => {
-                navigate(`/course/${courseId}/create-section`);
+                navigate(`/${courseId}/buy-course`);
               }}
               className="bg-gradient-to-r from-gray-700 to-[#F89A28] px-5 py-3 text-white font-bold rounded-md hover:from-[#F89A28] hover:to-gray-700 flex items-center gap-2 text-base transition-transform transform hover:scale-105 duration-300"
             >
               <MdOutlineAddCircleOutline size={20} />
-              Add Section
+              Buy Course
             </button>
           </div>
           {course.sections.length > 0 ? (

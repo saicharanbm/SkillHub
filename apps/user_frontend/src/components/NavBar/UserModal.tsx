@@ -2,6 +2,8 @@ import { MdOutlineLogout } from "react-icons/md";
 import { IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 import { FaShoppingBag } from "react-icons/fa";
+import { FaClock } from "react-icons/fa6";
+
 import { NavLink } from "react-router-dom";
 import { useLogoutMutation } from "../../services/mutations";
 import { useNavigate } from "react-router-dom";
@@ -74,7 +76,7 @@ function UserModal({ fullName }: { fullName: string }) {
             }`
           }
         >
-          <IoSettings /> <p>Watch History</p>
+          <FaClock /> <p>Watch History</p>
         </NavLink>
       </div>
 

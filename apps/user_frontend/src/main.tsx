@@ -13,6 +13,8 @@ import Signup from "./components/Signup.tsx";
 import Purchases from "./components/course/Purchases.tsx";
 import CoursePage from "./components/course/CoursePage.tsx";
 import WatchHistory from "./components/course/WatchHistory.tsx";
+import PageNotFound from "./components/PageNotFound.tsx";
+import AccountSettings from "./components/AccountSettings.tsx";
 
 export const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -69,11 +71,17 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/account-setting",
+        element: (
+          <AuthRoute isProtected={true}>
+            <AccountSettings />
+          </AuthRoute>
+        ),
+      },
+      {
         path: "*",
 
-        element: (
-          <h1 className="text-3xl font-bold underline text-white">404</h1>
-        ),
+        element: <PageNotFound />,
       },
     ],
   },
