@@ -1,6 +1,7 @@
 import { MdOutlineLogout } from "react-icons/md";
 import { IoMdCreate, IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
+import { FaShoppingBag } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useLogoutMutation } from "../../services/mutations";
 import { useNavigate } from "react-router-dom";
@@ -46,14 +47,14 @@ function UserModal({ fullName }: { fullName: string }) {
           <IoMdHome className="text-xl" /> <p>Home</p>
         </NavLink>
         <NavLink
-          to={"/create-course"}
+          to={"/Purchases"}
           className={({ isActive }) =>
             `px-4 py-2 hover:text-[#F89A28] cursor-pointer flex space-x-2 items-center ${
               isActive && "bg-gray-700 text-[#F89A28] font-semibold"
             }`
           }
         >
-          <IoMdCreate /> <p>Create Course</p>
+          <FaShoppingBag /> <p>Purchases</p>
         </NavLink>
         <NavLink
           to={"/account-setting"}

@@ -3,6 +3,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { IoMdCreate, IoMdHome } from "react-icons/io";
 import { SiGoogleanalytics } from "react-icons/si";
 import { IoSettings } from "react-icons/io5";
+import { FaShoppingBag } from "react-icons/fa";
 
 import { TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
@@ -79,19 +80,19 @@ const Sidebar = () => {
 
         <li>
           <NavLink
-            to="/create-course"
+            to="/purchases"
             className={({ isActive }) =>
               `flex items-center space-x-4 px-[11px] py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
               ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
-            <IoMdCreate size={24} />
+            <FaShoppingBag size={24} />
             <span
               className={`transition-opacity duration-300 ${
                 isTextVisible ? "block opacity-100" : "hidden opacity-0"
               }`}
             >
-              Create Course
+              Purchases
             </span>
           </NavLink>
         </li>
