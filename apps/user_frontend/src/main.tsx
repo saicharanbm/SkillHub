@@ -11,6 +11,8 @@ import AuthRoute from "./components/AuthRoute.tsx";
 import Login from "./components/Login.tsx";
 import Signup from "./components/Signup.tsx";
 import Purchases from "./components/course/Purchases.tsx";
+import CoursePage from "./components/course/CoursePage.tsx";
+import WatchHistory from "./components/course/WatchHistory.tsx";
 
 export const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -47,6 +49,22 @@ const router = createBrowserRouter([
         element: (
           <AuthRoute isProtected={true}>
             <Purchases />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/course/:id",
+        element: (
+          <AuthRoute isProtected={true}>
+            <CoursePage />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/watch-history",
+        element: (
+          <AuthRoute isProtected={true}>
+            <WatchHistory />
           </AuthRoute>
         ),
       },

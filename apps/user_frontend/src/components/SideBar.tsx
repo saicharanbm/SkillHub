@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
-import { IoMdCreate, IoMdHome } from "react-icons/io";
-import { SiGoogleanalytics } from "react-icons/si";
+import { IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 import { FaShoppingBag } from "react-icons/fa";
+import { FaClock } from "react-icons/fa6";
 
 import { TbLayoutSidebarRightExpandFilled } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
@@ -119,20 +119,20 @@ const Sidebar = () => {
         {/* Watch History (Static) */}
         <li>
           <NavLink
-            to="/analytics"
+            to="/watch-history"
             className={({ isActive }) =>
               `flex items-center space-x-4 px-[11px] py-3 font-semibold hover:bg-gray-700 rounded-md cursor-pointer
               ${isActive ? "bg-gray-700 text-[#F89A28]" : "text-white"}`
             }
           >
-            <SiGoogleanalytics size={24} />
+            <FaClock size={24} />
 
             <span
               className={`transition-opacity duration-300 ${
                 isTextVisible ? "block opacity-100" : "hidden opacity-0"
               }`}
             >
-              Analytics
+              Watch History
             </span>
           </NavLink>
         </li>

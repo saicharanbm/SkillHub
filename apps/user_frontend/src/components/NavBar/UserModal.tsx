@@ -1,5 +1,5 @@
 import { MdOutlineLogout } from "react-icons/md";
-import { IoMdCreate, IoMdHome } from "react-icons/io";
+import { IoMdHome } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 import { FaShoppingBag } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
@@ -65,6 +65,16 @@ function UserModal({ fullName }: { fullName: string }) {
           }
         >
           <IoSettings /> <p>Account & Settings</p>
+        </NavLink>
+        <NavLink
+          to={"/watch-history"}
+          className={({ isActive }) =>
+            `px-4 py-2 hover:text-[#F89A28] cursor-pointer flex space-x-2 items-center ${
+              isActive && "bg-gray-700 text-[#F89A28] font-semibold"
+            }`
+          }
+        >
+          <IoSettings /> <p>Watch History</p>
         </NavLink>
       </div>
 

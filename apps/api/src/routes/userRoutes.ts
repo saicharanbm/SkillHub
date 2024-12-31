@@ -220,4 +220,4 @@ userRouter.get("/purchases", verifyUserMiddleware, async (req, res) => {
   }
 });
 
-userRouter.use("/course", userCourseRouter);
+userRouter.use("/course", verifyUserMiddleware, userCourseRouter);

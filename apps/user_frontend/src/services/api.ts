@@ -75,3 +75,17 @@ export const fetchUserData = () => {
 export const userLogout = async () => {
   return axiosInstance.post("/signout");
 };
+export const getAllCourses = async ({ pageParam }: { pageParam: number }) => {
+  try {
+    const response = await axiosInstance.get(
+      `/course?limit=10&cursor=${pageParam}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
+};
+export const getCourse = async (id: string) => {
+  return axiosInstance.get(`/course/${id}`);
+};
