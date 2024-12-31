@@ -69,7 +69,7 @@ export const userLogin = (data: loginSchemaType) => {
   return axiosInstance.post("/signin", data);
 };
 export const fetchUserData = () => {
-  return axiosInstance.get("/user");
+  return axiosInstance.get("/user-data");
 };
 
 export const userLogout = async () => {

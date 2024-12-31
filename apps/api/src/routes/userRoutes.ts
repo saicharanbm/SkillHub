@@ -162,7 +162,7 @@ userRouter.post("/get-token", async (req, res) => {
   }
 });
 
-userRouter.get("/user", verifyUserMiddleware, async (req, res) => {
+userRouter.get("/user-data", verifyUserMiddleware, async (req, res) => {
   const userId = req.userId;
   try {
     const user = await client.user.findUnique({

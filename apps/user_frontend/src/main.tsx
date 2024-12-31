@@ -7,6 +7,9 @@ import { ToastContainer, Bounce } from "react-toastify";
 import "./index.css";
 import App from "./App.tsx";
 import Home from "./components/Home.tsx";
+import AuthRoute from "./components/AuthRoute.tsx";
+import Login from "./components/Login.tsx";
+import Signup from "./components/Signup.tsx";
 
 export const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -16,7 +19,34 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <AuthRoute isProtected={true}>
+            <Home />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <AuthRoute isProtected={false}>
+            <Login />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/signup",
+        element: (
+          <AuthRoute isProtected={false}>
+            <Signup />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "*",
+
+        element: (
+          <h1 className="text-3xl font-bold underline text-white">404</h1>
+        ),
       },
     ],
   },
