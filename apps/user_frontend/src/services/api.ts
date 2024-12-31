@@ -89,3 +89,7 @@ export const getAllCourses = async ({ pageParam }: { pageParam: number }) => {
 export const getCourse = async (id: string) => {
   return axiosInstance.get(`/course/${id}`);
 };
+
+export const createRazorPayOrder = async (id: string) => {
+  return axiosInstance.post(`/course/${id}/create-order`);
+};

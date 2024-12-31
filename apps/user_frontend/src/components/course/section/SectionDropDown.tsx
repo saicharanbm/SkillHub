@@ -1,23 +1,18 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ContentContainer from "./ContentContainer";
 function SectionDropDown({
-  id,
   title,
   contents,
 }: {
-  id: string;
   thumbnailUrl: string;
   title: string;
   contents: [];
 }) {
-  const { courseId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  const navigate = useNavigate();
   return (
     <div className="section-container w-full px-4 py-2 md:px-8 lg:px-12">
       {/* Section Header */}
@@ -40,16 +35,6 @@ function SectionDropDown({
       {/* Dropdown Content */}
       {isOpen && (
         <div className="dropdown-content bg-gray-900 rounded-b-lg p-6 shadow-lg border-t border-gray-700">
-          <div className="w-full flex justify-end mb-4">
-            <button
-              onClick={() =>
-                navigate(`/course/${courseId}/section/${id}/upload-content`)
-              }
-              className="bg-gradient-to-r from-gray-700 to-[#F89A28] px-5 py-2 text-white font-medium rounded-md hover:from-[#F89A28] hover:to-gray-700 flex items-center gap-2 text-base transition-transform transform hover:scale-105 duration-300"
-            >
-              <span>Add Content</span>
-            </button>
-          </div>
           {contents.length > 0 ? (
             <div className="conten-container w-full flex flex-col gap-4">
               {contents.map(
@@ -68,7 +53,9 @@ function SectionDropDown({
               <p className="text-lg md:text-2xl">
                 No Contents found for this Section
               </p>
-              <p className="text-sm">Please add some contents</p>
+              <p className="text-sm">
+                Please wait for the creator to add a content.
+              </p>
             </div>
           )}
         </div>

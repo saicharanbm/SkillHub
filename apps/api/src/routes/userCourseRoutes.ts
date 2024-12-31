@@ -1,6 +1,7 @@
 import { Router } from "express";
 export const userCourseRouter = Router();
 import client from "@repo/db/client";
+import { razorpayInstance } from "..";
 
 userCourseRouter.get("/", async (req, res) => {
   try {
@@ -77,6 +78,36 @@ userCourseRouter.get("/:id", async (req, res) => {
     }
 
     console.error("Error fetching course with sections and contents:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+userCourseRouter.post("/:id/create-order", async (req, res) => {
+  const courseId = req.params.id;
+  const userId = req.userId;
+
+  try {
+    const course = await client.course.findUniqueOrThrow({
+      where: { id: courseId },
+      select: {
+        price: true,
+      },
+    });
+    //now we create an order using razorpay
+    const options = {
+      amount: course.price, // amount in the smallest currency unit
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+    const order = await razorpayInstance.orders.create(options);
+    res.json({ order });
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      res.status(404).json({ message: "Course not found" });
+      return;
+    }
+
+    console.error("Error creating order", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

@@ -3,8 +3,13 @@ import "dotenv/config";
 import cors from "cors";
 import { router } from "./routes";
 import cookieParser from "cookie-parser";
+import Razorpay from "razorpay";
 
 const app = express();
+export const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+});
 app.use(cookieParser());
 
 app.use(express.json());
