@@ -31,6 +31,7 @@ function CoursePage() {
             title={course.title}
             description={course.description}
             price={course.price}
+            creatorName={course.creator.fullName}
             thumbnailUrl={course.thumbnailUrl}
           />
           <div className="p-4 w-full flex justify-end ">
