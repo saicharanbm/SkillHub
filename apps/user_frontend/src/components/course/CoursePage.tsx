@@ -7,6 +7,7 @@ import Spinner from "../shimmer/Spinner";
 import SectionDropDown from "./section/SectionDropDown";
 function CoursePage() {
   const { courseId } = useParams();
+  console.log(courseId);
   const navigate = useNavigate();
   const {
     data: course,

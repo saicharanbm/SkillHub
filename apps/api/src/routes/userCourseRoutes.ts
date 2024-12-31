@@ -51,9 +51,16 @@ userCourseRouter.get("/:id", async (req, res) => {
   const courseId = req.params.id;
 
   try {
-    const course = await client.course.findUnique({
+    const course = await client.course.findUniqueOrThrow({
       where: { id: courseId },
       include: {
+        creator: {
+          select: {
+            email: true,
+            fullName: true,
+            avatarUrl: true,
+          },
+        },
         sections: {
           include: {
             contents: true, // Include all contents for each section
@@ -62,20 +69,13 @@ userCourseRouter.get("/:id", async (req, res) => {
       },
     });
 
-    if (!course) {
+    res.json(course);
+  } catch (error: any) {
+    if (error.code === "P2025") {
       res.status(404).json({ message: "Course not found" });
       return;
     }
 
-    if (course.creatorId !== req.userId) {
-      res
-        .status(401)
-        .json({ message: "Unauthorized: You don't own this course" });
-      return;
-    }
-
-    res.json(course);
-  } catch (error) {
     console.error("Error fetching course with sections and contents:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }

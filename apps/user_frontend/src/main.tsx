@@ -53,7 +53,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/course/:id",
+        path: "/course/:courseId",
         element: (
           <AuthRoute isProtected={true}>
             <CoursePage />
