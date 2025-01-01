@@ -104,6 +104,37 @@ userCourseRouter.post("/:id/create-order", async (req, res) => {
         courseId,
       },
     };
+    // verify if there user had already tried or purchased the course
+    const userCourse = await client.userCourses.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+    });
+    if (userCourse && userCourse.status === "SUCCESS") {
+      res
+        .status(400)
+        .json({ message: "User has already purchased this course" });
+      return;
+    }
+
+    if (
+      userCourse &&
+      (userCourse.status === "FAILED" || userCourse.status === "PENDING")
+    ) {
+      // delete the previous order and create a new one
+      await client.userCourses.delete({
+        where: {
+          userId_courseId: {
+            userId,
+            courseId,
+          },
+        },
+      });
+    }
+
     const order = await razorpayInstance.orders.create(options);
 
     // create a user course entry with order id user and course id and status pending
