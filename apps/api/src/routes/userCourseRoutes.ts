@@ -83,6 +83,11 @@ userCourseRouter.get("/:id", async (req, res) => {
   }
 });
 
+// when user clicks on the buy button we fetch the course price and verify if the user has already tried or purchased the course
+// if the user has already bought the course we return an error
+//if user had tried but failed delete the record and create a new order
+// if the user has not tried or purchased the course we create an order
+//store the order id in the user courses table
 userCourseRouter.post("/:id/create-order", async (req, res) => {
   const courseId = req.params.id as string;
   const userId = req.userId as string;
@@ -158,6 +163,9 @@ userCourseRouter.post("/:id/create-order", async (req, res) => {
   }
 });
 
+// verification of the payments should be done throught webhooks
+// since we are sre not using the real money here, we are reliing on the frontend
+// to send back the payment details
 userCourseRouter.post("/:id/verify-payment", async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
@@ -176,7 +184,7 @@ userCourseRouter.post("/:id/verify-payment", async (req, res) => {
   }
   try {
     // check if the there is an order with the given order id in user courses table
-    const userCourse = await client.userCourses.findFirst({
+    const userCourse = await client.userCourses.findUnique({
       where: {
         razorpayOrderId: razorpay_order_id,
       },
@@ -214,4 +222,25 @@ userCourseRouter.post("/:id/verify-payment", async (req, res) => {
       res.status(400).json({ success: false, message: "Invalid signature" });
     }
   } catch (error) {}
+});
+
+//get user purchased courses
+userCourseRouter.get("/purchases", async (req, res) => {
+  const userId = req.userId as string;
+
+  try {
+    const purchases = await client.userCourses.findMany({
+      where: {
+        userId,
+        status: "SUCCESS",
+      },
+      include: {
+        course: true,
+      },
+    });
+    res.json(purchases);
+  } catch (error) {
+    console.error("Error getting purchases:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });

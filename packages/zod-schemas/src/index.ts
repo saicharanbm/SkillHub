@@ -22,7 +22,7 @@ export const getCourseThumbnailUrlSchema = zod.object({
 export const courseSchema = zod.object({
   title: zod.string().trim().min(3),
   description: zod.string().trim().min(10),
-  price: zod.number().min(100),
+  price: zod.number().min(100).max(100000000),
   thumbnailUrl: zod.string().trim(),
 });
 

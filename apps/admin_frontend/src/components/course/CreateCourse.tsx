@@ -148,8 +148,8 @@ function CreateCourse() {
             {...register("price", {
               required: "Price is required",
               validate: (value) =>
-                (value >= 10 && value <= 9000000) ||
-                "Price must be at least 10 and less than or equal to 9000000",
+                (value >= 10 && value <= 1000000) ||
+                "Price must be at least 10 and less than or equal to 1000000",
             })}
             placeholder="Enter course price"
             className="w-full bg-[#2C2C2E] text-white rounded-lg p-3 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
