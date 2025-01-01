@@ -2,6 +2,7 @@ import { Router } from "express";
 export const userCourseRouter = Router();
 import client from "@repo/db/client";
 import { razorpayInstance } from "..";
+import crypto from "crypto";
 
 userCourseRouter.get("/", async (req, res) => {
   try {
@@ -106,8 +107,26 @@ userCourseRouter.post("/:id/create-order", async (req, res) => {
       res.status(404).json({ message: "Course not found" });
       return;
     }
-
     console.error("Error creating order", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+userCourseRouter.post("/:id/verify-payment", async (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
+  console.log(req.body);
+
+  const key_secret = process.env.RAZORPAY_KEY_SECRET as string;
+
+  const generated_signature = crypto
+    .createHmac("sha256", key_secret)
+    .update(razorpay_order_id + "|" + razorpay_payment_id)
+    .digest("hex");
+
+  if (generated_signature === razorpay_signature) {
+    res.status(200).json({ success: true });
+  } else {
+    res.status(400).json({ success: false });
   }
 });

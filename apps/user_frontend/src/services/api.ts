@@ -2,7 +2,7 @@ import axios from "axios";
 import { loginSchemaType, signupSchemaType } from "../types";
 import { queryClient } from "../main";
 
-const baseURL = "http://localhost:3000/api/v1/user";
+export const baseURL = "http://localhost:3000/api/v1/user";
 
 export const axiosInstance = axios.create({
   baseURL,
