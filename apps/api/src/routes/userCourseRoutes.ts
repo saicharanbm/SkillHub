@@ -84,8 +84,8 @@ userCourseRouter.get("/:id", async (req, res) => {
 });
 
 userCourseRouter.post("/:id/create-order", async (req, res) => {
-  const courseId = req.params.id;
-  const userId = req.userId;
+  const courseId = req.params.id as string;
+  const userId = req.userId as string;
 
   try {
     const course = await client.course.findUniqueOrThrow({
@@ -99,8 +99,23 @@ userCourseRouter.post("/:id/create-order", async (req, res) => {
       amount: course.price, // amount in the smallest currency unit
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
+      notes: {
+        userId,
+        courseId,
+      },
     };
     const order = await razorpayInstance.orders.create(options);
+
+    // create a user course entry with order id user and course id and status pending
+    await client.userCourses.create({
+      data: {
+        razorpayOrderId: order.id,
+        userId,
+        courseId,
+        status: "PENDING",
+        amount: course.price,
+      },
+    });
     res.json({ order });
   } catch (error: any) {
     if (error.code === "P2025") {
@@ -115,18 +130,57 @@ userCourseRouter.post("/:id/create-order", async (req, res) => {
 userCourseRouter.post("/:id/verify-payment", async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
+  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    res.status(400).json({ success: false, message: "Invalid input" });
+    return;
+  }
   console.log(req.body);
 
   const key_secret = process.env.RAZORPAY_KEY_SECRET as string;
-
-  const generated_signature = crypto
-    .createHmac("sha256", key_secret)
-    .update(razorpay_order_id + "|" + razorpay_payment_id)
-    .digest("hex");
-
-  if (generated_signature === razorpay_signature) {
-    res.status(200).json({ success: true });
-  } else {
-    res.status(400).json({ success: false });
+  if (!key_secret) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server configuration error" });
+    return;
   }
+  try {
+    // check if the there is an order with the given order id in user courses table
+    const userCourse = await client.userCourses.findFirst({
+      where: {
+        razorpayOrderId: razorpay_order_id,
+      },
+    });
+    if (!userCourse) {
+      res
+        .status(404)
+        .json({ success: false, message: "Order not found Please try again" });
+      return;
+    }
+    //check if the user requesting the payment is the same as the one who created the order
+    if (userCourse.userId !== req.userId) {
+      res.status(403).json({ success: false, message: "Unauthorized access" });
+      return;
+    }
+    //verify the razorpay signature
+    const generated_signature = crypto
+      .createHmac("sha256", key_secret)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
+      .digest("hex");
+
+    if (generated_signature === razorpay_signature) {
+      //update the user course status to success
+      await client.userCourses.update({
+        where: {
+          razorpayOrderId: razorpay_order_id,
+        },
+        data: {
+          status: "SUCCESS",
+          paymentId: razorpay_payment_id,
+        },
+      });
+      res.status(200).json({ success: true });
+    } else {
+      res.status(400).json({ success: false, message: "Invalid signature" });
+    }
+  } catch (error) {}
 });

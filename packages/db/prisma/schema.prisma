@@ -74,19 +74,20 @@ model Content{
 model UserCourses{
   userId       String
   courseId     String
-  paymentId    String        @unique
+  paymentId   String?        @unique
   razorpayOrderId    String        @unique
   amount       Int
   status       PaymentStatus @default(PENDING)
   user         User          @relation(fields: [userId], references: [id])
   course       Course        @relation(fields: [courseId],references: [id])
+  enrolledAt   DateTime      @default(now())
   createdAt DateTime @default(now())
-  enrolledAt   DateTime      @updatedAt
+  updatedAt       DateTime      @updatedAt
   @@id([userId,courseId])
 }
 
 enum PaymentStatus{
   PENDING
-  COMPLETED
+  SUCCESS
   FAILED
 }
