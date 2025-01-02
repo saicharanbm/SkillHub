@@ -93,3 +93,7 @@ export const getCourse = async (id: string) => {
 export const createRazorPayOrder = async (id: string) => {
   return axiosInstance.post(`/course/${id}/create-order`);
 };
+
+export const getPurchasedCourses = async () => {
+  return axiosInstance.get("/purchases");
+};

@@ -1,5 +1,10 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchUserData, getAllCourses, getCourse } from "./api";
+import {
+  fetchUserData,
+  getAllCourses,
+  getCourse,
+  getPurchasedCourses,
+} from "./api";
 
 export const useAuthQuery = () => {
   return useQuery({
@@ -19,6 +24,13 @@ export const useGetAllCoursesQuery = () => {
     queryFn: getAllCourses,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+};
+
+export const useGetPurchasedCoursesQuery = () => {
+  return useQuery({
+    queryKey: ["purchases"],
+    queryFn: getPurchasedCourses,
   });
 };
 

@@ -190,25 +190,21 @@ userRouter.post("/signout", async (req, res) => {
   res.json({ message: "Logout successful" });
 });
 userRouter.get("/purchases", verifyUserMiddleware, async (req, res) => {
-  res.send("User Purchases route");
   const userId = req.userId;
 
   try {
     const purchases = await client.userCourses.findMany({
       where: {
         userId,
+        status: "SUCCESS",
       },
-      include: {
+      select: {
         course: {
           select: {
+            id: true,
             title: true,
             description: true,
             thumbnailUrl: true,
-            creator: {
-              select: {
-                fullName: true,
-              },
-            },
           },
         },
       },

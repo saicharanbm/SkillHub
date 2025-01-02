@@ -13,9 +13,24 @@ export const razorpayInstance = new Razorpay({
 app.use(cookieParser());
 
 app.use(express.json());
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", // Frontend domain
+//     credentials: true, // Enable credentials (cookies)
+//   })
+// );
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend domain
+    origin: (origin, callback) => {
+      console.log("Origin : ", origin);
+      //for the dev environment i am allowing all the ports of localhost to access the api server
+      if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
+        // Allow if origin is from localhost with any port
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS")); // Block other origins
+      }
+    },
     credentials: true, // Enable credentials (cookies)
   })
 );

@@ -24,6 +24,9 @@ const Home = () => {
     [isFetchingNextPage, fetchNextPage, hasNextPage]
   );
 
+  if (data) {
+    console.log(data);
+  }
   return (
     <div className="w-full p-4">
       {/* <h1>Courses</h1> */}

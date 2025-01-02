@@ -1,18 +1,40 @@
+import useIsDesktop from "../../hooks/useIsDesktop";
+import { useGetPurchasedCoursesQuery } from "../../services/queries";
+import ShimmerCard from "../shimmer/ShimmerCard";
+import CourseCard from "./CourseCard";
+
 function Purchases() {
+  const { data, isLoading } = useGetPurchasedCoursesQuery();
+  const isDesktop = useIsDesktop();
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        {Array.from({ length: isDesktop ? 10 : 4 }).map((_, index) => (
+          <ShimmerCard key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  // Ensure data exists and has valid content
+  if (!data || !data.data?.length) {
+    return <div className="w-full p-4 text-center">No courses found.</div>;
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-[#F89A28] mb-4">Purchases</h1>
-        <p className="text-lg text-gray-400 mb-8">
-          We're working hard to bring you something amazing!
-        </p>
-        <div className="flex justify-center items-center mb-6 pt-4">
-          <div className="w-24 h-2 bg-orange-500 relative">
-            <div className="absolute -top-8 left-0 w-8 h-8 bg-orange-400 rounded-full animate-bounce"></div>
-            <div className="absolute -top-8 right-0 w-8 h-8 bg-orange-400 rounded-full animate-bounce"></div>
-          </div>
-        </div>
-        <p className="text-sm text-gray-500">Stay tuned for updates!</p>
+    <div className="w-full p-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        {data.data.map(({ course }) => {
+          if (!course) {
+            console.error("Invalid course data:", course);
+            return null;
+          }
+
+          const { id, title, thumbnailUrl } = course;
+
+          return <CourseCard key={id} course={{ id, title, thumbnailUrl }} />;
+        })}
       </div>
     </div>
   );

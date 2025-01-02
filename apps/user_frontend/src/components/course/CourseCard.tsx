@@ -6,7 +6,7 @@ interface CourseCardProps {
     id: string;
     thumbnailUrl: string;
     title: string;
-    price: number;
+    price?: number;
   };
   isLast?: boolean;
   lastCourseRef?: React.Ref<HTMLDivElement>;
@@ -35,9 +35,11 @@ const CourseCard = ({ course, isLast, lastCourseRef }: CourseCardProps) => {
         >
           {course.title}
         </h1>
-        <p className="text-sm text-gray-400">
-          Price: <span>₹ {course.price / 100}</span>
-        </p>
+        {course.price && (
+          <p className="text-sm text-gray-400">
+            Price: <span>₹ {course.price / 100}</span>
+          </p>
+        )}
       </div>
     </div>
   );
