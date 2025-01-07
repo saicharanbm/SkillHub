@@ -52,13 +52,20 @@ export async function transcodeVideo() {
   return new Promise((resolve, reject) => {
     ffmpeg(inputStream)
       .outputOptions([
-        "-s 640x360",
-        "-c:v h264",
-        "-b:v 800k",
-        "-c:a aac",
-        "-b:a 128k",
-        "-hls_time 10",
-        "-hls_playlist_type vod",
+        "-vf",
+        "scale=640:-2", // Scale the width to 640 and auto-adjust height to maintain aspect ratio
+        "-c:v",
+        "h264",
+        "-b:v",
+        "800k",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+        "-hls_time",
+        "10",
+        "-hls_playlist_type",
+        "vod",
         "-hls_segment_filename",
         path.join(tempDir, "360p_%03d.ts"),
       ])
