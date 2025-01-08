@@ -9,6 +9,7 @@ import {
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
 import { uuid } from "../utils";
+import { sendVideosToKafka } from "../utils/producer";
 export const adminCourseRouter = Router();
 
 //get created courses
@@ -382,17 +383,24 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
     // Now, move the thumbnail to the correct path
     try {
       // Move the thumbnail to the new path (course/userid/courseid/thumbnail)
-      const videoDestination = `course/admin/${req.userId}/${course.id}/${content.id}/video/${uuid()}`;
+      const videoDestination = `course/admin/${req.userId}/${course.id}/${request.data.sectionId}/${content.id}/video/raw/${uuid()}`;
       await moveFile(request.data.contentUrl, videoDestination);
 
       // Move the thumbnail to the new path (course/userid/courseid/thumbnail)
-      const thumbnailDestination = `course/admin/${req.userId}/${course.id}/${content.id}/thumbnail/${uuid()}`;
+      const thumbnailDestination = `course/admin/${req.userId}/${course.id}/${request.data.sectionId}/${content.id}/thumbnail/${uuid()}`;
       await moveFile(request.data.thumbnailUrl, thumbnailDestination);
 
       // If the move is successful, update the content with the new path
       const updatedContent = await client.content.update({
         where: { id: content.id },
         data: { url: videoDestination, thumbnailUrl: thumbnailDestination },
+      });
+      //add video id and the destination and source to the kafka
+      const destination = `course/admin/${req.userId}/${course.id}/${request.data.sectionId}/${content.id}/video/transcoded/`;
+      await sendVideosToKafka({
+        id: content.id,
+        source: videoDestination,
+        destination,
       });
 
       res.json({
