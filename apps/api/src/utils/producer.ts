@@ -3,13 +3,13 @@ import { Kafka } from "kafkajs";
 const kafka = new Kafka({ brokers: ["localhost:9092"] });
 
 export const producer = kafka.producer();
-// export const connectToKafkaProducer = async()=>{
-//     await producer.connect();
-// }
-producer.connect();
+
+export async function connectToKafkaProducer() {
+  await producer.connect();
+}
 
 export async function sendVideosToKafka(data: {
-  id: string;
+  videoId: string;
   source: string;
   destination: string;
 }) {
@@ -18,5 +18,3 @@ export async function sendVideosToKafka(data: {
     messages: [{ value: JSON.stringify(data) }],
   });
 }
-
-producer.connect();

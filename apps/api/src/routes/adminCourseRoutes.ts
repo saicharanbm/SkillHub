@@ -398,7 +398,7 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
       //add video id and the destination and source to the kafka
       const destination = `course/admin/${req.userId}/${course.id}/${request.data.sectionId}/${content.id}/video/transcoded/`;
       await sendVideosToKafka({
-        id: content.id,
+        videoId: content.id,
         source: videoDestination,
         destination,
       });

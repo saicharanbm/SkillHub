@@ -59,7 +59,8 @@ async function processResolution(
     audioBitrate: string;
   },
   tempDir: string,
-  inputFilePath: string
+  inputFilePath: string,
+  destination: string
 ): Promise<void> {
   console.log(`Processing ${resolution.name} resolution...`);
 
@@ -108,7 +109,7 @@ async function processResolution(
   );
   await uploadToS3(
     bucketName,
-    `${outputKeyPrefix}${resolution.name}.m3u8`,
+    `${destination}${resolution.name}.m3u8`,
     playlistContent
   );
 
@@ -117,13 +118,17 @@ async function processResolution(
   for (const file of files) {
     if (file.startsWith(resolution.name) && file.endsWith(".ts")) {
       const segmentContent = fs.readFileSync(path.join(tempDir, file));
-      await uploadToS3(bucketName, `${outputKeyPrefix}${file}`, segmentContent);
+      await uploadToS3(bucketName, `${destination}${file}`, segmentContent);
       console.log(`Uploaded segment: ${file}`);
     }
   }
 }
 
-export async function transcodeVideo() {
+export async function transcodeVideo(data: {
+  videoId: string;
+  source: string;
+  destination: string;
+}) {
   // Create a temporary directory with a timestamp
   // const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   // const tempDir = path.join(os.tmpdir(), `hls-${timestamp}`);
@@ -138,7 +143,7 @@ export async function transcodeVideo() {
   try {
     // Download the input file first
     console.log("Downloading input file from S3...");
-    await downloadFromS3ToLocal(bucketName, inputKey, inputFilePath);
+    await downloadFromS3ToLocal(bucketName, data.source, inputFilePath);
     console.log("Download completed");
 
     const resolutions = [
@@ -150,7 +155,12 @@ export async function transcodeVideo() {
     // Process each resolution sequentially
     for (const resolution of resolutions) {
       try {
-        await processResolution(resolution, tempDir, inputFilePath);
+        await processResolution(
+          resolution,
+          tempDir,
+          inputFilePath,
+          data.destination
+        );
         console.log(`Completed processing ${resolution.name}`);
       } catch (err) {
         console.error(`Error processing ${resolution.name}:`, err);
