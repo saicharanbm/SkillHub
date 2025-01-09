@@ -9,7 +9,8 @@ import {
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
 import { uuid } from "../utils";
-import { sendVideosToKafka } from "../utils/producer";
+// import { sendVideosToKafka } from "../utils/producer";
+import { producer } from "..";
 export const adminCourseRouter = Router();
 
 //get created courses
@@ -397,7 +398,7 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
       });
       //add video id and the destination and source to the kafka
       const destination = `course/admin/${req.userId}/${course.id}/${request.data.sectionId}/${content.id}/video/transcoded/`;
-      await sendVideosToKafka({
+      const job = await producer.sendVideoJob({
         videoId: content.id,
         source: videoDestination,
         destination,
@@ -406,6 +407,7 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
       res.json({
         message: "Content added successfully",
         content: updatedContent,
+        job: job,
       });
     } catch (error) {
       console.log("Error moving file:", error);
