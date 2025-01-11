@@ -412,9 +412,9 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
     } catch (error) {
       console.log("Error moving file:", error);
 
-      // Delete the course if the file move fails to prevent storing the wrong data.
-      await client.course.delete({
-        where: { id: course.id },
+      // Delete the content if the file move fails to prevent storing the wrong data.
+      await client.content.delete({
+        where: { id: content.id },
       });
 
       res
