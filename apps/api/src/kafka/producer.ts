@@ -41,7 +41,7 @@ export class VideoJobProducer {
     };
 
     await this.producer.send({
-      topic: "video-transcoding-jobs",
+      topic: KAFKA_TOPICS.JOBS,
       messages: [
         {
           key: data.videoId,

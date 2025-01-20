@@ -2,7 +2,7 @@
 // import { Kafka, Consumer, KafkaMessage } from "kafkajs";
 // import { transcodeVideo } from "../services/transcode";
 
-import { Kafka, Consumer, KafkaMessage, ConsumerConfig } from "kafkajs";
+import { Kafka, Consumer, ConsumerConfig } from "kafkajs";
 import { transcodeVideo } from "../services/transcode";
 
 interface VideoJob {
@@ -53,7 +53,7 @@ export class VideoConsumer {
 
       await this.consumer.subscribe({
         topic: "video-transcoding-jobs",
-        fromBeginning: false,
+        fromBeginning: true,
       });
 
       this.isRunning = true;
