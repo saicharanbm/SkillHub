@@ -4,7 +4,7 @@ import cors from "cors";
 import { router } from "./routes";
 import cookieParser from "cookie-parser";
 import Razorpay from "razorpay";
-import { VideoJobProducer } from "./kafka/producer";
+import { VideoJobProducer } from "./services/redis";
 
 const app = express();
 export const razorpayInstance = new Razorpay({
@@ -12,7 +12,7 @@ export const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET!,
 });
 app.use(cookieParser());
-export const producer = new VideoJobProducer(["localhost:9092"]);
+export const producer = new VideoJobProducer("redis://localhost:6379");
 async function startServer() {
   await producer.connect();
 

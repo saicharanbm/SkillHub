@@ -398,11 +398,11 @@ adminCourseRouter.post("/:id/section/:sectionId/content", async (req, res) => {
       });
       //add video id and the destination and source to the kafka
       const destination = `course/admin/${req.userId}/${course.id}/${request.data.sectionId}/${content.id}/video/transcoded/`;
-      const job = await producer.sendVideoJob({
-        videoId: content.id,
-        source: videoDestination,
-        destination,
-      });
+      const job = await producer.addJob(
+        content.id,
+        videoDestination,
+        destination
+      );
 
       res.json({
         message: "Content added successfully",
