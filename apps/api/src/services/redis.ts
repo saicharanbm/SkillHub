@@ -52,6 +52,7 @@ export class VideoJobProducer {
       destination: job.destination,
       status: job.status,
     });
+    console.log("job added : ", job);
 
     return job;
   }
