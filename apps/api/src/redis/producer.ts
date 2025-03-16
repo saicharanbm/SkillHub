@@ -1,6 +1,4 @@
 import { createClient } from "redis";
-import { v4 as uuidv4 } from "uuid";
-
 interface VideoJob {
   videoId: string;
   source: string;
