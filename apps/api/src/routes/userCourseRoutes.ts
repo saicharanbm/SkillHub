@@ -51,6 +51,7 @@ userCourseRouter.get("/", async (req, res) => {
 
 userCourseRouter.get("/:id", async (req, res) => {
   const courseId = req.params.id;
+  const userId = req.userId as string;
 
   try {
     const course = await client.course.findUniqueOrThrow({
@@ -68,10 +69,17 @@ userCourseRouter.get("/:id", async (req, res) => {
             contents: true, // Include all contents for each section
           },
         },
+        purchasedUsers: {
+          where: { userId: userId }, // Filter by userId
+          select: { status: true },
+        },
       },
     });
 
-    res.json(course);
+    const isPurchased = course.purchasedUsers[0]?.status === "SUCCESS";
+    const { purchasedUsers, ...courseDetails } = { ...course, isPurchased };
+
+    res.json(courseDetails);
   } catch (error: any) {
     if (error.code === "P2025") {
       res.status(404).json({ message: "Course not found" });
