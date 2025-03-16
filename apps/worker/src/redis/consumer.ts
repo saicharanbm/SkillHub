@@ -118,7 +118,7 @@ export class VideoJobWorker {
       console.log(`Job completed: ${job.videoId}`);
 
       await this.redis.set(`video_status:${job.videoId}`, JSON.stringify(job));
-      await this.redis.xAck(REDIS_STREAM, GROUP_NAME, job.id);
+      await this.redis.xAck(REDIS_STREAM, GROUP_NAME, jobId);
     } catch (error) {
       console.error(`Error processing job ${job.videoId}:`, error);
     }
