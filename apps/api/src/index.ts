@@ -47,7 +47,7 @@ async function startServer() {
         if (
           !origin ||
           origin.startsWith("http://localhost:") ||
-          origin === "https://course.skillhub.saicharanbm.in" ||
+          origin === "https://creator.skillhub.saicharanbm.in" ||
           origin === "https://skillhub.saicharanbm.in"
         ) {
           // Allow if origin is from localhost with any port or production url.

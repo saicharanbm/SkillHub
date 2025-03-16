@@ -1,22 +1,30 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function ContentContainer({
   thumbnailUrl,
+  contentId,
   title,
   description,
   isPurchased = false,
+  sectionId,
 }: {
+  sectionId: string;
+  contentId: string;
   thumbnailUrl: string;
   title: string;
   description: string;
   isPurchased: boolean;
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   return (
     <div
       className={`content w-full p-4 grid grid-cols-[30%,70%]  gap-4   border-dashed border-2 border-gray-700 rounded-md ${isPurchased && "cursor-pointer"}`}
       onClick={() => {
-        if (isPurchased) navigate("/hello");
+        if (isPurchased)
+          navigate(
+            `${location.pathname}${location.pathname.endsWith("/") ? "" : "/"}${sectionId}/${contentId}`
+          );
       }}
     >
       <img

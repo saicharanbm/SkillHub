@@ -49,8 +49,10 @@ function SectionDropDown({
                 }) => (
                   <ContentContainer
                     key={content.id}
+                    contentId={content.id}
                     {...content}
                     isPurchased={isPurchased}
+                    sectionId={sectionId}
                   />
                 )
               )}
