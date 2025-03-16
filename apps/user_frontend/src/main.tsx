@@ -15,6 +15,7 @@ import CoursePage from "./components/course/CoursePage.tsx";
 import WatchHistory from "./components/course/WatchHistory.tsx";
 import PageNotFound from "./components/PageNotFound.tsx";
 import AccountSettings from "./components/AccountSettings.tsx";
+import VideoPlayer from "./components/course/content/VideoPlayer.tsx";
 
 export const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
         element: (
           <AuthRoute isProtected={true}>
             <CoursePage />
+          </AuthRoute>
+        ),
+      },
+      {
+        path: "/course/:courseId/:sectionId/:contentId",
+        element: (
+          <AuthRoute isProtected={true}>
+            <VideoPlayer />
           </AuthRoute>
         ),
       },
