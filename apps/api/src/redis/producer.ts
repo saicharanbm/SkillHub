@@ -17,22 +17,13 @@ export class VideoJobProducer {
   }
 
   async connect() {
-    const connection = await this.redisClient.connect();
-    console.log("connection ", connection);
-    const createdGroup = await this.redisClient
-      .xGroupCreate(REDIS_STREAM, "video-consumer-group", "$", {
-        MKSTREAM: true,
-      })
-      .catch((err) => {
-        if (!err.message.includes("BUSYGROUP")) {
-          console.error("Error creating consumer group:", err.message);
-        }
-      });
-    console.log("Created Group :", createdGroup);
+    await this.redisClient.connect();
+    console.log("Redis client connected.");
   }
 
   async disconnect() {
     await this.redisClient.disconnect();
+    console.log("Redis client disconnected.");
   }
 
   async addJob(videoId: string, source: string, destination: string) {
