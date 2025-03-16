@@ -121,22 +121,26 @@ function CoursePage() {
             creatorName={course.creator.fullName}
             thumbnailUrl={course.thumbnailUrl}
           />
-          <div className="p-4 w-full flex justify-end ">
-            <button
-              onClick={handlePayment}
-              className="bg-gradient-to-r from-gray-700 to-[#F89A28] px-5 py-3 text-white font-bold rounded-md hover:from-[#F89A28] hover:to-gray-700 flex items-center gap-2 text-base transition-transform transform hover:scale-105 duration-300"
-            >
-              {isPaymentLoading ? "Processing..." : "Buy Course"}
-            </button>
-          </div>
+          {!course.isPurchased && (
+            <div className="p-4 w-full flex justify-end ">
+              <button
+                onClick={handlePayment}
+                className="bg-gradient-to-r from-gray-700 to-[#F89A28] px-5 py-3 text-white font-bold rounded-md hover:from-[#F89A28] hover:to-gray-700 flex items-center gap-2 text-base transition-transform transform hover:scale-105 duration-300"
+              >
+                {isPaymentLoading ? "Processing..." : "Buy Course"}
+              </button>
+            </div>
+          )}
           {course.sections.length > 0 ? (
             course.sections.map(
               (section: { id: string; title: string; contents: [] }) => {
                 return (
                   <SectionDropDown
                     key={section.id}
-                    thumbnailUrl={course.thumbnailUrl}
-                    {...section}
+                    sectionId={section.id}
+                    title={section.title}
+                    contents={section.contents}
+                    isPurchased={course.isPurchased}
                   />
                 );
               }

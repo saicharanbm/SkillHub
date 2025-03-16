@@ -1,12 +1,15 @@
 import { useState } from "react";
 import ContentContainer from "./ContentContainer";
 function SectionDropDown({
+  sectionId,
   title,
   contents,
+  isPurchased = false,
 }: {
-  thumbnailUrl: string;
+  sectionId: string;
   title: string;
   contents: [];
+  isPurchased: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -44,7 +47,11 @@ function SectionDropDown({
                   description: string;
                   thumbnailUrl: string;
                 }) => (
-                  <ContentContainer key={content.id} {...content} />
+                  <ContentContainer
+                    key={content.id}
+                    {...content}
+                    isPurchased={isPurchased}
+                  />
                 )
               )}
             </div>

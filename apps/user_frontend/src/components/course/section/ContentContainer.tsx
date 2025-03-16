@@ -1,14 +1,24 @@
+import { useNavigate } from "react-router-dom";
+
 function ContentContainer({
   thumbnailUrl,
   title,
   description,
+  isPurchased = false,
 }: {
   thumbnailUrl: string;
   title: string;
   description: string;
+  isPurchased: boolean;
 }) {
+  const navigate = useNavigate();
   return (
-    <div className="content w-full p-4 grid grid-cols-[30%,70%]  gap-4   border-dashed border-2 border-gray-700 rounded-md">
+    <div
+      className={`content w-full p-4 grid grid-cols-[30%,70%]  gap-4   border-dashed border-2 border-gray-700 rounded-md ${isPurchased && "cursor-pointer"}`}
+      onClick={() => {
+        if (isPurchased) navigate("/hello");
+      }}
+    >
       <img
         src={`https://transcoded-videos.saicharanbm.in/${thumbnailUrl}`}
         alt=""
