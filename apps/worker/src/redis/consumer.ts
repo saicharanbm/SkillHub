@@ -47,22 +47,21 @@ export class VideoJobWorker {
           GROUP_NAME,
           "-",
           "+",
-          pending.pending
+          1
         );
 
         const jobs = await this.redis.xClaim(
           REDIS_STREAM,
           GROUP_NAME,
           CONSUMER_NAME,
-          60000,
-          pendingMessages.map((m) => m.id)
+          3600000, // 60 minutes in milliseconds
+          [pendingMessages[0].id]
         );
 
         for (const job of jobs) {
           if (job) {
             const { id, message } = job;
-            console.log("pending video job :", message);
-
+            console.log("processing pending video job:", message);
             await this.handleJob(id, message);
           }
         }
