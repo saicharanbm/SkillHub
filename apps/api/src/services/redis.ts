@@ -2,7 +2,6 @@ import { createClient } from "redis";
 import { v4 as uuidv4 } from "uuid";
 
 interface VideoJob {
-  id: string;
   videoId: string;
   source: string;
   destination: string;
@@ -20,8 +19,9 @@ export class VideoJobProducer {
   }
 
   async connect() {
-    await this.redisClient.connect();
-    await this.redisClient
+    const connection = await this.redisClient.connect();
+    console.log("connection ", connection);
+    const createdGroup = await this.redisClient
       .xGroupCreate(REDIS_STREAM, "video-consumer-group", "$", {
         MKSTREAM: true,
       })
@@ -30,6 +30,7 @@ export class VideoJobProducer {
           console.error("Error creating consumer group:", err.message);
         }
       });
+    console.log("Created Group :", createdGroup);
   }
 
   async disconnect() {
@@ -38,7 +39,6 @@ export class VideoJobProducer {
 
   async addJob(videoId: string, source: string, destination: string) {
     const job: VideoJob = {
-      id: uuidv4(),
       videoId,
       source,
       destination,
@@ -46,7 +46,6 @@ export class VideoJobProducer {
     };
 
     await this.redisClient.xAdd(REDIS_STREAM, "*", {
-      id: job.id,
       videoId: job.videoId,
       source: job.source,
       destination: job.destination,

@@ -9,7 +9,6 @@ import {
 import { getSecureUrl, moveFile } from "../utils/s3";
 import client from "@repo/db/client";
 import { uuid } from "../utils";
-// import { sendVideosToKafka } from "../utils/producer";
 import { producer } from "..";
 export const adminCourseRouter = Router();
 
