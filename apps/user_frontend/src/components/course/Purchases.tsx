@@ -25,16 +25,22 @@ function Purchases() {
   return (
     <div className="w-full p-4">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {data.data.map(({ course }) => {
-          if (!course) {
-            console.error("Invalid course data:", course);
-            return null;
+        {data.data.map(
+          ({
+            course,
+          }: {
+            course: { id: string; title: string; thumbnailUrl: string };
+          }) => {
+            if (!course) {
+              console.error("Invalid course data:", course);
+              return null;
+            }
+
+            const { id, title, thumbnailUrl } = course;
+
+            return <CourseCard key={id} course={{ id, title, thumbnailUrl }} />;
           }
-
-          const { id, title, thumbnailUrl } = course;
-
-          return <CourseCard key={id} course={{ id, title, thumbnailUrl }} />;
-        })}
+        )}
       </div>
     </div>
   );
