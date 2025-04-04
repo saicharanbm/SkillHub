@@ -9,8 +9,9 @@ import {
   addCourseSectionContentSchemaType,
 } from "../types";
 import { queryClient } from "../main";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-const baseURL = "http://localhost:3000/api/v1/admin";
+const baseURL = apiUrl || "http://localhost:3000/api/v1/admin";
 
 export const axiosInstance = axios.create({
   baseURL,

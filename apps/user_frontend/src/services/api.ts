@@ -1,8 +1,9 @@
 import axios from "axios";
 import { loginSchemaType, signupSchemaType } from "../types";
 import { queryClient } from "../main";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-export const baseURL = "http://localhost:3000/api/v1/user";
+const baseURL = apiUrl || "http://localhost:3000/api/v1/user";
 
 export const axiosInstance = axios.create({
   baseURL,
